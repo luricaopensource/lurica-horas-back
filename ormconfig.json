@@ -1,0 +1,13 @@
+{
+  "type": "mysql",
+  "host": "localhost",
+  "port": 3306,
+  "username": "root",
+  "password": "Isabel1234",
+  "database": "hourendb",
+  "entities": [
+    "dist/**/*.entity.js",
+    "node_modules/nestjs-admin/**/*.entity.js"
+  ],
+  "migrations": ["dist/db/migrations/*.js"]
+}

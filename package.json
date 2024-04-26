@@ -21,7 +21,8 @@
     "typeorm": "yarn build && npx typeorm -d dist/db/data-source.js",
     "migration:generate": "yarn typeorm -- migration:generate",
     "migration:run": "yarn typeorm -- migration:run",
-    "migration:revert": "yarn typeorm -- migration:revert"
+    "migration:revert": "yarn typeorm -- migration:revert",
+    "create:user": "npx nestjs-admin createAdminUser"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
