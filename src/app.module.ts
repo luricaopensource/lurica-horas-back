@@ -12,7 +12,7 @@ import { UsersModule } from './users/users.module'
     ConfigModule.forRoot({ isGlobal: true }),
     // TypeOrmModule.forRoot(dataSourceOptions),
     TasksModule,
-    UsersModule
+    // UsersModule
   ],
   controllers: [AppController],
   providers: [AppService]
