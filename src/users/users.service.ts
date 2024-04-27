@@ -8,14 +8,15 @@ import { InjectRepository } from '@nestjs/typeorm'
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>
+    // @InjectRepository(User)
+    // private readonly usersRepository: Repository<User>
   ) { }
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    const userData = this.usersRepository.create(createUserDto)
+  create(createUserDto: CreateUserDto): string {
+    // const userData = this.usersRepository.create(createUserDto)
 
-    return this.usersRepository.save(userData)
+    // return this.usersRepository.save(userData)
+    return `This action creates a user`
   }
 
   findAll() {
