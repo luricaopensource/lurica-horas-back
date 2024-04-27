@@ -8,8 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>
+    // @InjectRepository(User)
+    // private readonly usersRepository: Repository<User>
   ) { }
 
   create(createUserDto: CreateUserDto): string {

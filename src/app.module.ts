@@ -10,7 +10,7 @@ import { UsersModule } from './users/users.module'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({ useFactory: () => dataSourceOptions }),
+    // TypeOrmModule.forRootAsync({ useFactory: () => dataSourceOptions }),
     TasksModule,
     UsersModule
   ],
