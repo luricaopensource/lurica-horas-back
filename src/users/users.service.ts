@@ -33,7 +33,6 @@ export class UsersService {
     if (!user) { throw new HttpException(`User with id ${id} not found`, 404) }
 
     const userData = this.usersRepository.merge(user, updateUserDto)
-
     return await this.usersRepository.save(userData)
   }
 
