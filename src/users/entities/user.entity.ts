@@ -1,35 +1,35 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
-// @Entity()
+@Entity()
 export class User {
-    // @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn()
     id: number
 
-    // @Column()
+    @Column()
     firstName: string
 
-    // @Column()
+    @Column()
     lastName: string
 
-    // @Column()
+    @Column()
     username: string
 
-    // @Column()
+    @Column()
     password: string
 
-    // @Column()
+    @Column()
     email: string
 
-    // @Column({ default: () => "'employee'" })
+    @Column({ default: () => "'employee'" })
     role: string
 
-    // @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date
 
-    // @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })
+    @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })
     updatedAt: Date
 
-    // @Column({ nullable: true, type: 'timestamp', default: null })
+    @Column({ nullable: true, type: 'timestamp', default: null })
     deletedAt: Date
 }
 

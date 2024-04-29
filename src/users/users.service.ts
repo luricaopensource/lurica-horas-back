@@ -1,37 +1,47 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
-import { Repository } from 'typeorm'
+import { IsNull, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 
 @Injectable()
 export class UsersService {
   constructor(
-    // @InjectRepository(User)
-    // private readonly usersRepository: Repository<User>
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>
   ) { }
 
-  create(createUserDto: CreateUserDto): string {
-    // const userData = this.usersRepository.create(createUserDto)
+  create(createUserDto: CreateUserDto): Promise<User> {
+    const userData = this.usersRepository.create(createUserDto)
 
-    // return this.usersRepository.save(userData)
-    return `This action creates a user`
+    return this.usersRepository.save(userData)
   }
 
-  findAll() {
-    return `This action returns all users`
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find({ where: { deletedAt: IsNull() } })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`
+  async findOne(id: number): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ id })
+    if (!user) { throw new HttpException(`User with id ${id} not found`, 404) }
+    return user
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findOne(id)
+    if (!user) { throw new HttpException(`User with id ${id} not found`, 404) }
+
+    const userData = this.usersRepository.merge(user, updateUserDto)
+
+    return await this.usersRepository.save(userData)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`
+  async remove(id: number): Promise<User> {
+    const user = await this.findOne(id)
+    if (!user) { throw new HttpException(`User with id ${id} not found`, 404) }
+    user.deletedAt = new Date()
+
+    return await this.usersRepository.save(user)
   }
 }
