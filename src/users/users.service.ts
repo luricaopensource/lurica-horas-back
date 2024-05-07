@@ -4,12 +4,16 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 import { IsNull, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
+import { LoginAuthDto } from 'src/auth/dto/login-auth.dto'
+import { ILoginData } from 'src/auth/entities/login-data.entity'
+import { AuthService } from 'src/auth/auth.service'
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>
+    private readonly usersRepository: Repository<User>,
+    private readonly authService: AuthService
   ) { }
 
   create(createUserDto: CreateUserDto): Promise<User> {
@@ -28,9 +32,15 @@ export class UsersService {
     return user
   }
 
+  async findOneByUsername(username: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { username } })
+    if (!user) { throw new HttpException(`Usuario no`, 404) }
+    return user
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id)
-    if (!user) { throw new HttpException(`User with id ${id} not found`, 404) }
+    if (!user) { throw new HttpException(`Usuario no`, 404) }
 
     const userData = this.usersRepository.merge(user, updateUserDto)
     return await this.usersRepository.save(userData)
@@ -38,7 +48,7 @@ export class UsersService {
 
   async remove(id: number): Promise<User> {
     const user = await this.findOne(id)
-    if (!user) { throw new HttpException(`User with id ${id} not found`, 404) }
+    if (!user) { throw new HttpException(`Usuario no`, 404) }
     user.deletedAt = new Date()
 
     return await this.usersRepository.save(user)
