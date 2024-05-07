@@ -20,7 +20,7 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas.')
     }
 
-    const payload = { username: user.username, sub: user.id }
+    const payload = { email: user.email, username: user.username, sub: user.id }
 
     return { access_token: await this.jwtService.signAsync(payload) }
   }
