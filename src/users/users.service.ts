@@ -4,16 +4,12 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 import { IsNull, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { LoginAuthDto } from 'src/auth/dto/login-auth.dto'
-import { ILoginData } from 'src/auth/entities/login-data.entity'
-import { AuthService } from 'src/auth/auth.service'
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
-    private readonly authService: AuthService
+    private readonly usersRepository: Repository<User>
   ) { }
 
   create(createUserDto: CreateUserDto): Promise<User> {
