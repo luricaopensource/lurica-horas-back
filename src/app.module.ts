@@ -14,7 +14,7 @@ import { AuthModule } from './auth/auth.module'
     TypeOrmModule.forRootAsync({ useFactory: () => dataSourceOptions }),
     TasksModule,
     UsersModule,
-    // AuthModule
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService]
