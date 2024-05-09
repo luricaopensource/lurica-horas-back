@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TasksService } from './tasks.service'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
+import { Public } from 'src/shared/decorators/public'
 
 @Controller('tasks')
 export class TasksController {
@@ -12,6 +13,7 @@ export class TasksController {
     return this.tasksService.create(createTaskDto)
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.tasksService.findAll()
