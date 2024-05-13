@@ -19,6 +19,7 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest()
     const token = this.extractTokenFromHeader(request)
+
     if (!token) {
       throw new UnauthorizedException('Authentication token is required')
     }
@@ -31,7 +32,7 @@ export class AuthGuard implements CanActivate {
       )
       request['user'] = payload
     } catch {
-      throw new UnauthorizedException()
+      throw new UnauthorizedException('Authentication token is invalid')
     }
     return true
   }
