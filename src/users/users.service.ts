@@ -24,19 +24,18 @@ export class UsersService {
 
   async findOne(id: number): Promise<User> {
     const user = await this.usersRepository.findOneBy({ id })
-    if (!user) { throw new HttpException(`User with id ${id} not found`, 404) }
+    if (!user) { throw new HttpException(`Usuario no encontrado`, 404) }
     return user
   }
 
   async findOneByUsername(username: string): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { username } })
-    if (!user) { throw new HttpException(`Usuario no`, 404) }
+    if (!user) { throw new HttpException(`Usuario ${username} no encontrado`, 404) }
     return user
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id)
-    if (!user) { throw new HttpException(`Usuario no`, 404) }
 
     const userData = this.usersRepository.merge(user, updateUserDto)
     return await this.usersRepository.save(userData)
@@ -44,7 +43,6 @@ export class UsersService {
 
   async remove(id: number): Promise<User> {
     const user = await this.findOne(id)
-    if (!user) { throw new HttpException(`Usuario no`, 404) }
     user.deletedAt = new Date()
 
     return await this.usersRepository.save(user)
