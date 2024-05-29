@@ -1,39 +1,44 @@
+import { Project } from "src/projects/entities/project.entity"
 import { Task } from "src/tasks/entities/task.entity"
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { UsersToProjects } from "src/users_to_projects/users_to_projects.entity"
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
-    id: number
+    public id: number
 
     @Column()
-    firstName: string
+    public firstName: string
 
     @Column()
-    lastName: string
+    public lastName: string
 
     @Column()
-    username: string
+    public username: string
 
     @Column()
-    password: string
+    public password: string
 
     @Column()
-    email: string
+    public email: string
 
     @Column({ default: () => "'employee'" })
-    role: string
+    public role: string
 
     @OneToMany(() => Task, task => task.user)
-    tasks: Task[]
+    public tasks: Task[]
+
+    @OneToMany(() => UsersToProjects, usersToProjects => usersToProjects.user)
+    public usersToProjects: UsersToProjects[]
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date
+    public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })
-    updatedAt: Date
+    public updatedAt: Date
 
     @Column({ nullable: true, type: 'timestamp', default: null })
-    deletedAt: Date
+    public deletedAt: Date
 }
 

@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Task } from './entities/task.entity'
 import { IsNull, Repository } from 'typeorm'
 import { UsersService } from 'src/users/users.service'
+import { TaskDTO } from './dto/task.dto'
+import { ProjectDTO } from 'src/projects/dto/project.dto'
 
 @Injectable()
 export class TasksService {
@@ -22,8 +24,26 @@ export class TasksService {
     return this.tasksRepository.save(taskData)
   }
 
-  async findAll(): Promise<Task[]> {
-    return await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user'] })
+  async findAll(): Promise<TaskDTO[]> {
+    const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project'] })
+
+    return tasks.map<TaskDTO>((task: Task) => {
+      const projectDTO: ProjectDTO = {
+        id: task.project.id,
+        name: task.project.name,
+        currency: task.project.currency
+      }
+
+      const id = task.id
+      const dateTo = task.dateTo
+      const project = projectDTO
+      const description = task.description
+      const hours = task.hours
+      const status = task.status
+      const paid = task.paid
+
+      return { id, dateTo, project, description, hours, status, paid }
+    })
   }
 
   async findOne(id: number): Promise<Task> {

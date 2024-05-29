@@ -1,44 +1,45 @@
+import { Project } from "src/projects/entities/project.entity"
 import { User } from "src/users/entities/user.entity"
 import { Column, Double, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Task {
     @PrimaryGeneratedColumn()
-    id: number
+    public id: number
 
     @Column()
-    dateFrom: Date
+    public dateFrom: Date
 
     @Column()
-    dateTo: Date
+    public dateTo: Date
 
     @Column()
-    hours: number
+    public hours: number
 
     @Column({ type: "text" })
-    description: string
+    public description: string
 
     @Column()
-    type: string
+    public type: string
 
     @Column()
-    paid: boolean
+    public paid: boolean
 
     @Column()
-    status: string
+    public status: string
 
-    // User relation
     @ManyToOne(() => User, user => user.tasks)
-    user: User
+    public user: User
 
-    // TODO: Project relation
+    @ManyToOne(() => Project, project => project.tasks)
+    public project: Project
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date
+    public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })
-    updatedAt: Date
+    public updatedAt: Date
 
     @Column({ nullable: true, type: 'timestamp', default: null })
-    deletedAt: Date
+    public deletedAt: Date
 }
