@@ -8,6 +8,7 @@ import { dataSourceOptions } from 'db/data-source'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
 import { ProjectsModule } from './projects/projects.module';
+import { CompanyModule } from './company/company.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { ProjectsModule } from './projects/projects.module';
     TasksModule,
     UsersModule,
     AuthModule,
-    ProjectsModule
+    ProjectsModule,
+    CompanyModule
   ],
   controllers: [AppController],
   providers: [AppService]

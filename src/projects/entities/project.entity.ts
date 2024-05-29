@@ -1,3 +1,4 @@
+import { Company } from "src/company/entities/company.entity"
 import { Task } from "src/tasks/entities/task.entity"
 import { User } from "src/users/entities/user.entity"
 import { UsersToProjects } from "src/users_to_projects/users_to_projects.entity"
@@ -7,10 +8,6 @@ import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "t
 export class Project {
     @PrimaryGeneratedColumn()
     public id: number
-
-    // TODO: Create Company entity
-    // @OneToMany(Company, company.projects)
-    // companies: Company[]
 
     @Column()
     public name: string
@@ -36,4 +33,7 @@ export class Project {
 
     @OneToMany(() => Task, task => task.project)
     public tasks: Task[]
+
+    @OneToMany(() => Company, company => company.projects)
+    public company_id: Company
 }
