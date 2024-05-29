@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
 import { ProjectsModule } from './projects/projects.module';
 import { CompanyModule } from './company/company.module';
+import { MilestoneModule } from './milestone/milestone.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { CompanyModule } from './company/company.module';
     UsersModule,
     AuthModule,
     ProjectsModule,
-    CompanyModule
+    CompanyModule,
+    MilestoneModule
   ],
   controllers: [AppController],
   providers: [AppService]

@@ -1,8 +1,9 @@
 import { Company } from "src/company/entities/company.entity"
+import { Milestone } from "src/milestone/entities/milestone.entity"
 import { Task } from "src/tasks/entities/task.entity"
 import { User } from "src/users/entities/user.entity"
 import { UsersToProjects } from "src/users_to_projects/users_to_projects.entity"
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Project {
@@ -24,10 +25,6 @@ export class Project {
     @Column({ nullable: true, type: 'timestamp', default: null })
     public deletedAt: Date
 
-    // TODO: Milestone relation
-    // @OneToMany(Milestone, milestone.project)
-    // milestones: Milestone[]
-
     @OneToMany(() => UsersToProjects, usersToProjects => usersToProjects.project)
     public usersToProjects: UsersToProjects[]
 
@@ -36,4 +33,8 @@ export class Project {
 
     @OneToMany(() => Company, company => company.projects)
     public company_id: Company
+
+    @ManyToOne(() => Milestone, milestone => milestone.project_id)
+    public milestones: Milestone[]
+
 }
