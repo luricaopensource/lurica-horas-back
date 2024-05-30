@@ -1,18 +1,18 @@
 import { Project } from "src/projects/entities/project.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Milestone {
     @PrimaryGeneratedColumn()
     public id: number
 
-    @OneToMany(() => Project, project => project.milestones)
-    public project_id: Project
+    @ManyToOne(() => Project, project => project.milestones)
+    public project: Project
 
     @Column()
     public name: string
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column()
     public date: Date
 
     @Column()
@@ -23,7 +23,7 @@ export class Milestone {
 
     @Column()
     public surplus_amount: number
-
+    
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
@@ -32,6 +32,4 @@ export class Milestone {
 
     @Column({ nullable: true, type: 'timestamp', default: null })
     public deletedAt: Date
-
-
 }

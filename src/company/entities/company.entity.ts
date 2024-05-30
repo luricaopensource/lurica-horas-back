@@ -9,7 +9,7 @@ export class Company {
     @Column()
     public name: string
 
-    @ManyToOne(() => Project, project => project.company_id)
+    @OneToMany(() => Project, project => project.company)
     public projects: Project[]
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -20,7 +20,4 @@ export class Company {
 
     @Column({ nullable: true, type: 'timestamp', default: null })
     public deletedAt: Date
-
-
-
 }

@@ -14,7 +14,7 @@ export class MilestoneController {
   }
 
   @Get()
-  findAll(): Promise<Milestone[]> {
+  findAll() {
     return this.milestoneService.findAll();
   }
 

@@ -31,10 +31,10 @@ export class Project {
     @OneToMany(() => Task, task => task.project)
     public tasks: Task[]
 
-    @OneToMany(() => Company, company => company.projects)
-    public company_id: Company
-
-    @ManyToOne(() => Milestone, milestone => milestone.project_id)
+    @OneToMany(() => Milestone, milestone => milestone.project)
     public milestones: Milestone[]
+
+    @ManyToOne(() => Company, company => company.projects)
+    public company: Company
 
 }
