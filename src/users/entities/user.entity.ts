@@ -23,8 +23,17 @@ export class User {
     @Column()
     public email: string
 
-    @Column({ default: () => "'employee'" })
-    public role: string
+    @Column({ default: () => 1 })
+    public role: number
+
+    @Column({ nullable: true })
+    public currency: number
+
+    @Column({ nullable: true })
+    public hourlyAmount: number
+
+    @Column({ nullable: true })
+    public monthlyAmount: number
 
     @OneToMany(() => Task, task => task.user)
     public tasks: Task[]

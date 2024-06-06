@@ -4,5 +4,8 @@ export class CreateUserDto {
     readonly username: string
     readonly password: string
     readonly email: string
-    readonly role: string | null
+    readonly role: number | null
+    readonly currency: number | null
+    readonly hourlyAmount: number | null
+    readonly monthlyAmount: number | null
 }
