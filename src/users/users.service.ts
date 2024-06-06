@@ -1,15 +1,18 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { HttpException, Inject, Injectable, Logger, Scope } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 import { IsNull, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
+import { REQUEST } from '@nestjs/core'
 
-@Injectable()
+@Injectable({scope: Scope.REQUEST})
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>
+    private readonly usersRepository: Repository<User>,
+    @Inject(REQUEST)
+    private readonly request: Request,
   ) { }
 
   create(createUserDto: CreateUserDto): Promise<User> {
@@ -47,4 +50,14 @@ export class UsersService {
 
     return await this.usersRepository.save(user)
   }
+
+  async getUserFromBearerToken(): Promise<any> {
+    Logger.log(this.request);
+    // const user = request['user'];
+
+    // return await this.findOneByUsername(user.username);
+
+    }
+
+
 }
