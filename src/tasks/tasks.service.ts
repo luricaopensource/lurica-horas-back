@@ -31,7 +31,8 @@ export class TasksService {
       const projectDTO: ProjectDTO = {
         id: task.project.id,
         name: task.project.name,
-        currency: task.project.currency
+        currency: task.project.currency,
+        companyName: task.project.company.name
       }
 
       const id = task.id

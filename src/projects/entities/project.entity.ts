@@ -36,5 +36,4 @@ export class Project {
 
     @ManyToOne(() => Company, company => company.projects)
     public company: Company
-
 }
