@@ -7,9 +7,11 @@ import { ConfigModule } from '@nestjs/config'
 import { dataSourceOptions } from 'db/data-source'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
-import { ProjectsModule } from './projects/projects.module';
-import { CompanyModule } from './company/company.module';
-import { MilestoneModule } from './milestone/milestone.module';
+import { ProjectsModule } from './projects/projects.module'
+import { CompanyModule } from './company/company.module'
+import { MilestoneModule } from './milestone/milestone.module'
+import { ReportsModule } from './reports/reports.module'
+import { PrinterModule } from './printer/printer.module';
 
 @Module({
   imports: [
@@ -20,7 +22,9 @@ import { MilestoneModule } from './milestone/milestone.module';
     AuthModule,
     ProjectsModule,
     CompanyModule,
-    MilestoneModule
+    MilestoneModule,
+    ReportsModule,
+    PrinterModule
   ],
   controllers: [AppController],
   providers: [AppService]
