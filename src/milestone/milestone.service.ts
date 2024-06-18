@@ -21,7 +21,7 @@ export class MilestoneService {
   async create(createMilestoneDto: CreateMilestoneDto): Promise<Milestone> {
     const project = await this.projectService.findOne(createMilestoneDto.projectId)
     const milestoneData = this.milestoneRepository.create(createMilestoneDto)
-    // milestoneData.project = project; descomentar cuando juli termine project
+    milestoneData.project = project
 
     return this.milestoneRepository.save(milestoneData)
   }
