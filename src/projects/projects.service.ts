@@ -28,7 +28,7 @@ export class ProjectsService {
   }
 
   async findAll() {
-    const projects: Project[] = await this.projectRepository.find({ where: { deletedAt: IsNull() } })
+    const projects: Project[] = await this.projectRepository.find({ where: { deletedAt: IsNull() }, relations: ['company'] })
 
     return projects.map((project: Project) => {
       const projectDTO: ProjectDTO = {
