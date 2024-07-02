@@ -7,6 +7,7 @@ import { IsNull, Repository } from 'typeorm'
 import { UsersService } from 'src/users/users.service'
 import { TaskDTO } from './dto/task.dto'
 import { ProjectDTO } from 'src/projects/dto/project.dto'
+import { getCurrency } from 'src/shared/helpers/getCurrency'
 
 @Injectable()
 export class TasksService {
@@ -31,7 +32,7 @@ export class TasksService {
       const projectDTO: ProjectDTO = {
         id: task.project.id,
         name: task.project.name,
-        currency: task.project.currency,
+        currency: getCurrency(task.project.currency),
         companyName: task.project.company.name
       }
 

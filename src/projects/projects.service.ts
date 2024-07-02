@@ -1,20 +1,30 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { HttpException, Injectable, Logger } from '@nestjs/common'
 import { CreateProjectDto } from './dto/create-project.dto'
 import { UpdateProjectDto } from './dto/update-project.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Project } from './entities/project.entity'
 import { IsNull, Repository } from 'typeorm'
 import { ProjectDTO } from './dto/project.dto'
+import { CompanyService } from 'src/company/company.service'
+import { IResponse } from 'src/shared/interfaces/response'
+import { getCurrency } from 'src/shared/helpers/getCurrency'
 
 @Injectable()
 export class ProjectsService {
   constructor(@InjectRepository(Project)
-  private readonly projectRepository: Repository<Project>) { }
+  private readonly projectRepository: Repository<Project>,
+    private readonly companyService: CompanyService) { }
 
-  create(createProjectDto: CreateProjectDto) {
+  async create(createProjectDto: CreateProjectDto): Promise<IResponse> {
+    const company = await this.companyService.findOne(createProjectDto.companyId)
     const projectData = this.projectRepository.create(createProjectDto)
 
-    return this.projectRepository.save(projectData)
+    projectData.currency = projectData.currency
+    projectData.company = company
+
+    const savedProject = await this.projectRepository.save(projectData)
+
+    return { id: savedProject.id }
   }
 
   async findAll() {
@@ -25,7 +35,7 @@ export class ProjectsService {
         id: project.id,
         name: project.name,
         companyName: project.company.name,
-        currency: project.currency
+        currency: getCurrency(project.currency)
       }
 
       return projectDTO

@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 import { UserDTO } from './dto/user.dto'
+import { IResponse } from 'src/shared/interfaces/response'
 
 @Controller('users')
 export class UsersController {
@@ -15,7 +16,7 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  create(@Body() createUserDto: CreateUserDto): Promise<IResponse> {
     return this.usersService.create(createUserDto)
   }
 
@@ -30,12 +31,12 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UserDTO> {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<IResponse> {
     return this.usersService.update(+id, updateUserDto)
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<UserDTO> {
+  remove(@Param('id') id: string): Promise<IResponse> {
     return this.usersService.remove(+id)
   }
 }

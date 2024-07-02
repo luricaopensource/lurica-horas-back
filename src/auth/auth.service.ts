@@ -5,6 +5,7 @@ import { ILoginData } from './entities/login-data.entity'
 import { UsersService } from 'src/users/users.service'
 import { User } from 'src/users/entities/user.entity'
 import { JwtService } from '@nestjs/jwt'
+import { IResponse } from 'src/shared/interfaces/response'
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
     return { access_token: await this.jwtService.signAsync(payload) }
   }
 
-  register(registerAuthDto: CreateUserDto): Promise<User> {
+  register(registerAuthDto: CreateUserDto): Promise<IResponse> {
     return this.userService.create(registerAuthDto)
   }
 }

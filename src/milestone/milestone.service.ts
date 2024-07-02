@@ -7,6 +7,7 @@ import { IsNull, Repository } from 'typeorm'
 import { ProjectsService } from 'src/projects/projects.service'
 import { MilestoneDTO } from './dto/milestone.dto'
 import { ProjectDTO } from 'src/projects/dto/project.dto'
+import { IResponse } from 'src/shared/interfaces/response'
 
 @Injectable()
 export class MilestoneService {
@@ -18,12 +19,15 @@ export class MilestoneService {
   ) { }
 
 
-  async create(createMilestoneDto: CreateMilestoneDto): Promise<Milestone> {
+  async create(createMilestoneDto: CreateMilestoneDto): Promise<IResponse> {
     const project = await this.projectService.findOne(createMilestoneDto.projectId)
     const milestoneData = this.milestoneRepository.create(createMilestoneDto)
+
     milestoneData.project = project
 
-    return this.milestoneRepository.save(milestoneData)
+    const savedMilestone = await this.milestoneRepository.save(milestoneData)
+
+    return { id: savedMilestone.id }
   }
 
 
@@ -31,22 +35,15 @@ export class MilestoneService {
     const milestones = await this.milestoneRepository.find({ where: { deletedAt: IsNull() }, relations: ['project'] })
 
     return milestones.map<MilestoneDTO>((milestone: Milestone) => {
-      const projectDTO: ProjectDTO = {
-        id: milestone.project.id,
-        name: milestone.project.name,
-        currency: milestone.project.currency,
-        companyName: milestone.project.company.name
-      }
-
       const id = milestone.id
       const date = milestone.date
       const name = milestone.name
-      const total_amount = milestone.total_amount
-      const paid_amount = milestone.paid_amount
-      const surplus_amount = milestone.surplus_amount
-      const project = projectDTO
+      const totalAmount = milestone.totalAmount
+      const paidAmount = milestone.paidAmount
+      const surplusAmount = milestone.surplusAmount
+      const projectName = milestone.project.name
 
-      return { id, date, name, total_amount, paid_amount, surplus_amount, project }
+      return { id, date, name, totalAmount, paidAmount, surplusAmount, projectName }
     })
   }
 

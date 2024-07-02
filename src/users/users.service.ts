@@ -6,6 +6,9 @@ import { IsNull, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserDTO } from './dto/user.dto'
 import { REQUEST } from '@nestjs/core'
+import { getCurrency } from 'src/shared/helpers/getCurrency'
+import { getRole } from 'src/shared/helpers/getRole'
+import { IResponse } from 'src/shared/interfaces/response'
 
 export interface UserResponse {
   id: number
@@ -21,21 +24,12 @@ export class UsersService {
     private readonly request: Request,
   ) { }
 
-
-  getCurrencies(id: number): string {
-    const currencies = ['ARS', 'USD']
-    return currencies[id]
-  }
-
-  getRoles(id: number): string {
-    const roles = ['Administrador', 'Consultor', 'Empleado']
-    return roles[id]
-  }
-
-  create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<IResponse> {
     const userData = this.userRepository.create(createUserDto)
 
-    return this.userRepository.save(userData)
+    const savedUser = await this.userRepository.save(userData)
+
+    return { id: savedUser.id }
   }
 
   async findAll(): Promise<UserDTO[]> {
@@ -48,8 +42,8 @@ export class UsersService {
         lastName: user.lastName,
         username: user.username,
         email: user.email,
-        role: this.getRoles(user.role),
-        currency: this.getCurrencies(user.currency),
+        role: getRole(user.role),
+        currency: getCurrency(user.currency),
         hourlyAmount: user.hourlyAmount,
         monthlyAmount: user.monthlyAmount
       }
@@ -70,36 +64,18 @@ export class UsersService {
     return user
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserDTO> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<IResponse> {
     const user = await this.findOne(id)
-    const userSaved = await this.userRepository.save({ ...user, ...updateUserDto })
-    return {
-      id: userSaved.id,
-      firstName: userSaved.firstName,
-      lastName: userSaved.lastName,
-      username: userSaved.username,
-      email: userSaved.email,
-      role: this.getRoles(userSaved.role),
-      currency: this.getCurrencies(userSaved.currency),
-      hourlyAmount: userSaved.hourlyAmount,
-      monthlyAmount: userSaved.monthlyAmount
-    }
+    const savedUser = await this.userRepository.save({ ...user, ...updateUserDto })
+
+    return { id: savedUser.id }
   }
 
-  async remove(id: number): Promise<UserDTO> {
+  async remove(id: number): Promise<IResponse> {
     const user = await this.findOne(id)
     const deletedUser = await this.userRepository.save({ ...user, deletedAt: new Date() })
-    return {
-      id: deletedUser.id,
-      firstName: deletedUser.firstName,
-      lastName: deletedUser.lastName,
-      username: deletedUser.username,
-      email: deletedUser.email,
-      role: this.getRoles(deletedUser.role),
-      currency: this.getCurrencies(deletedUser.currency),
-      hourlyAmount: deletedUser.hourlyAmount,
-      monthlyAmount: deletedUser.monthlyAmount
-    }
+
+    return { id: deletedUser.id }
   }
 
   async getUserFromBearerToken(): Promise<UserDTO> {
@@ -112,8 +88,8 @@ export class UsersService {
       lastName: user.lastName,
       username: user.username,
       email: user.email,
-      role: this.getRoles(user.role),
-      currency: this.getCurrencies(user.currency),
+      role: getRole(user.role),
+      currency: getCurrency(user.currency),
       hourlyAmount: user.hourlyAmount,
       monthlyAmount: user.monthlyAmount
     }

@@ -1,5 +1,5 @@
-import { Project } from "src/projects/entities/project.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Project } from "src/projects/entities/project.entity"
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Company {
@@ -12,7 +12,7 @@ export class Company {
     @OneToMany(() => Project, project => project.company)
     public projects: Project[]
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })

@@ -11,7 +11,7 @@ import { ProjectsModule } from './projects/projects.module'
 import { CompanyModule } from './company/company.module'
 import { MilestoneModule } from './milestone/milestone.module'
 import { ReportsModule } from './reports/reports.module'
-import { PrinterModule } from './printer/printer.module';
+import { PrinterModule } from './printer/printer.module'
 
 @Module({
   imports: [

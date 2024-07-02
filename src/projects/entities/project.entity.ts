@@ -14,9 +14,9 @@ export class Project {
     public name: string
 
     @Column()
-    public currency: string
+    public currency: number
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })
@@ -34,6 +34,6 @@ export class Project {
     @OneToMany(() => Milestone, milestone => milestone.project)
     public milestones: Milestone[]
 
-    @ManyToOne(() => Company, company => company.projects)
+    @ManyToOne(() => Company, company => company.projects, { eager: true })
     public company: Company
 }

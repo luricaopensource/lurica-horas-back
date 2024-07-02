@@ -23,16 +23,16 @@ export class User {
     @Column()
     public email: string
 
-    @Column({ default: () => 1 })
+    @Column({ default: 1 })
     public role: number
 
-    @Column({ nullable: true })
+    @Column({ default: 1 })
     public currency: number
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'decimal', precision: 15, scale: 2 })
     public hourlyAmount: number
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'decimal', precision: 15, scale: 2 })
     public monthlyAmount: number
 
     @OneToMany(() => Task, task => task.user)
@@ -41,7 +41,7 @@ export class User {
     @OneToMany(() => UsersToProjects, usersToProjects => usersToProjects.user)
     public usersToProjects: UsersToProjects[]
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })
