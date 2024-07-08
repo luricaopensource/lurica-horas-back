@@ -19,12 +19,25 @@ export class TasksService {
     private readonly usersService: UsersService
   ) { }
 
-  async create(createTaskDto: CreateTaskDto): Promise<Task> {
-    const user = await this.usersService.findOne(createTaskDto.userId)
-    const taskData = this.tasksRepository.create(createTaskDto)
-    taskData.user = user
+  async create(createTasksDto: CreateTaskDto[]): Promise<Task[]> {
+    // const user = await this.usersService.findOne(createTaskDto.userId)
+    // const taskData = this.tasksRepository.create(createTaskDto)
+    // taskData.user = user
 
-    return this.tasksRepository.save(taskData)
+    // return this.tasksRepository.save(taskData)
+
+    const tasks: Task[] = [];
+    
+    for (const createTaskDto of createTasksDto) {
+      const user = await this.usersService.findOne(createTaskDto.userId);
+      const taskData = this.tasksRepository.create(createTaskDto);
+      taskData.user = user;
+
+      const savedTask = await this.tasksRepository.save(taskData);
+      tasks.push(savedTask);
+    }
+
+    return tasks;
   }
 
   async findAll(): Promise<TaskDTO[]> {
