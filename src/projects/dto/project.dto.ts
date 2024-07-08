@@ -1,6 +1,10 @@
+import { CompanyDTO } from "src/company/dto/company.dto"
+import { MilestoneDTO } from "src/milestone/dto/milestone.dto"
+
 export interface ProjectDTO {
     id: number
     name: string
-    companyName: string
-    currency: string
+    company: CompanyDTO
+    currency: string,
+    milestones: MilestoneDTO[]
 }

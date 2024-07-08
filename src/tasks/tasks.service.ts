@@ -8,6 +8,8 @@ import { UsersService } from 'src/users/users.service'
 import { TaskDTO } from './dto/task.dto'
 import { ProjectDTO } from 'src/projects/dto/project.dto'
 import { getCurrency } from 'src/shared/helpers/getCurrency'
+import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
+import { Milestone } from 'src/milestone/entities/milestone.entity'
 
 @Injectable()
 export class TasksService {
@@ -33,7 +35,8 @@ export class TasksService {
         id: task.project.id,
         name: task.project.name,
         currency: getCurrency(task.project.currency),
-        companyName: task.project.company.name
+        company: { id: task.project.company.id, name: task.project.company.name },
+        milestones: task.project.milestones.map<MilestoneDTO>((milestone: Milestone) => { return { id: milestone.id, name: milestone.name } })
       }
 
       const id = task.id

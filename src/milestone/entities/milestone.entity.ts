@@ -6,7 +6,7 @@ export class Milestone {
     @PrimaryGeneratedColumn()
     public id: number
 
-    @ManyToOne(() => Project, project => project.milestones, { eager: true })
+    @ManyToOne(() => Project, project => project.milestones)
     public project: Project
 
     @Column()
