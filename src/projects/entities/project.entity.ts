@@ -16,6 +16,9 @@ export class Project {
     @Column()
     public currency: number
 
+    @Column({ type: 'decimal', precision: 15, scale: 2 })
+    public amount: number
+
     @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 

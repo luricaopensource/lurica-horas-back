@@ -48,6 +48,7 @@ export class TasksService {
         id: task.project.id,
         name: task.project.name,
         currency: getCurrency(task.project.currency),
+        amount: task.project.amount,
         company: { id: task.project.company.id, name: task.project.company.name },
         milestones: task.project.milestones.map<MilestoneDTO>((milestone: Milestone) => { return { id: milestone.id, name: milestone.name } })
       }

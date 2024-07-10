@@ -22,6 +22,7 @@ export class ProjectsService {
     const projectData = this.projectRepository.create(createProjectDto)
 
     projectData.currency = projectData.currency
+    projectData.amount = projectData.amount
     projectData.company = company
 
     const savedProject = await this.projectRepository.save(projectData)
@@ -38,6 +39,7 @@ export class ProjectsService {
         name: project.name,
         company: { id: project.company.id, name: project.company.name },
         currency: getCurrency(project.currency),
+        amount: project.amount,
         milestones: project.milestones.map<MilestoneDTO>((milestone: Milestone) => { return { id: milestone.id, name: milestone.name } })
       }
 

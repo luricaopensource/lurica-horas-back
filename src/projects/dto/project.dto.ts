@@ -6,5 +6,6 @@ export interface ProjectDTO {
     name: string
     company: CompanyDTO
     currency: string,
+    amount: number,
     milestones: MilestoneDTO[]
 }
