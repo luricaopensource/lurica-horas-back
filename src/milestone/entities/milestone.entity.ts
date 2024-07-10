@@ -16,13 +16,7 @@ export class Milestone {
     public date: Date
 
     @Column({ type: 'decimal', precision: 15, scale: 2 })
-    public totalAmount: number
-
-    @Column({ type: 'decimal', precision: 15, scale: 2 })
-    public paidAmount: number
-
-    @Column({ type: 'decimal', precision: 15, scale: 2 })
-    public surplusAmount: number
+    public amount: number
 
     @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date

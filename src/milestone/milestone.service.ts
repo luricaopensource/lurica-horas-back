@@ -38,12 +38,10 @@ export class MilestoneService {
       const id = milestone.id
       const date = milestone.date
       const name = milestone.name
-      const totalAmount = milestone.totalAmount
-      const paidAmount = milestone.paidAmount
-      const surplusAmount = milestone.surplusAmount
+      const amount = milestone.amount
       const projectName = milestone.project.name
 
-      return { id, date, name, totalAmount, paidAmount, surplusAmount, projectName }
+      return { id, date, name, amount, projectName }
     })
   }
 
