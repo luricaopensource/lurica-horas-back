@@ -1,7 +1,7 @@
 export interface GetReportBody {
-    project?: string,
+    projectId?: number,
     dateFrom?: string,
     dateTo?: string,
-    employee?: string,
-    customer?: string
+    employeeId?: number,
+    customerId?: number
 }

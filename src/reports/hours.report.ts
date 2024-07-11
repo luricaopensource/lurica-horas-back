@@ -1,6 +1,14 @@
 import { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
 import { headerSection } from "./sections/header.section"
 
+interface IReportContent {
+    date: string
+    project: string
+    task: string
+    hours: number
+    milestone: string
+}
+
 const styles: StyleDictionary = {
     header: {
         fontSize: 22,
@@ -15,7 +23,7 @@ const styles: StyleDictionary = {
 }
 
 
-export const getHoursReport = (subtitle: string): TDocumentDefinitions => {
+export const getHoursReport = (subtitle: string, content: IReportContent[]): TDocumentDefinitions => {
     return {
         styles,
         pageOrientation: 'landscape',
@@ -29,14 +37,8 @@ export const getHoursReport = (subtitle: string): TDocumentDefinitions => {
                     widths: ['*', '*', '*', '*', '*'],
                     body: [
                         ['Fecha', 'Proyecto', 'Tarea', 'Horas', 'Hito'],
-                        ['2021-01-01', 'Project 1', 'Task 1', '1', 'Hito 1'],
-                        ['2021-01-01', 'Project 1', 'Task 2', '2', 'Hito 2'],
-                        ['2021-01-01', 'Project 2', 'Task 1', '3', 'Hito 3'],
-                        ['2021-01-01', 'Project 2', 'Task 2', '4', 'Hito 4'],
-                        ['2021-01-02', 'Project 1', 'Task 1', '1', 'Hito 5'],
-                        ['2021-01-02', 'Project 1', 'Task 2', '2', 'Hito 6'],
-                        ['2021-01-02', 'Project 2', 'Task 1', '3', 'Hito 7'],
-                        ['2021-01-02', 'Project 2', 'Task 2', '4', 'Hito 8']
+                        ['2021-01-01', 'Project 1', 'Task 1', 1, 'Hito 1'],
+                        content
                     ]
                 }
             }
