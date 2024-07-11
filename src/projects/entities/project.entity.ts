@@ -1,4 +1,4 @@
-import { Company } from "src/company/entities/company.entity"
+import { Client } from "src/client/entities/client.entity"
 import { Milestone } from "src/milestone/entities/milestone.entity"
 import { Task } from "src/tasks/entities/task.entity"
 import { User } from "src/users/entities/user.entity"
@@ -37,6 +37,6 @@ export class Project {
     @OneToMany(() => Milestone, milestone => milestone.project, { eager: true })
     public milestones: Milestone[]
 
-    @ManyToOne(() => Company, company => company.projects, { eager: true })
-    public company: Company
+    @ManyToOne(() => Client, client => client.projects, { eager: true })
+    public client: Client
 }

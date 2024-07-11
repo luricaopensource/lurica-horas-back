@@ -32,7 +32,7 @@ export class MilestoneService {
 
 
   async findAll(): Promise<MilestoneDTO[]> {
-    const milestones = await this.milestoneRepository.find({ where: { deletedAt: IsNull() }, relations: ['project', 'project.company'] })
+    const milestones = await this.milestoneRepository.find({ where: { deletedAt: IsNull() }, relations: ['project', 'project.client'] })
 
     return milestones.map<MilestoneDTO>((milestone: Milestone) => {
       const id = milestone.id

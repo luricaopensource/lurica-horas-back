@@ -8,7 +8,7 @@ import { dataSourceOptions } from 'db/data-source'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
 import { ProjectsModule } from './projects/projects.module'
-import { CompanyModule } from './company/company.module'
+import { ClientModule } from './client/client.module'
 import { MilestoneModule } from './milestone/milestone.module'
 import { ReportsModule } from './reports/reports.module'
 import { PrinterModule } from './printer/printer.module'
@@ -21,7 +21,7 @@ import { PrinterModule } from './printer/printer.module'
     UsersModule,
     AuthModule,
     ProjectsModule,
-    CompanyModule,
+    ClientModule,
     MilestoneModule,
     ReportsModule,
     PrinterModule

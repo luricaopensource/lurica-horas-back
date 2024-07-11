@@ -2,14 +2,14 @@ import { Project } from "src/projects/entities/project.entity"
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
-export class Company {
+export class Client {
     @PrimaryGeneratedColumn()
     public id: number
 
     @Column()
     public name: string
 
-    @OneToMany(() => Project, project => project.company)
+    @OneToMany(() => Project, project => project.client)
     public projects: Project[]
 
     @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
