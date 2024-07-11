@@ -1,6 +1,14 @@
 import { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
 import { headerSection } from "./sections/header.section"
 
+interface IReportContent {
+    date: string
+    project: string
+    task: string
+    hours: number
+    milestone: string
+}
+
 const styles: StyleDictionary = {
     header: {
         fontSize: 22,
@@ -15,11 +23,11 @@ const styles: StyleDictionary = {
 }
 
 
-export const getHoursReport = (): TDocumentDefinitions => {
+export const getHoursReport = (subtitle: string, content: IReportContent[]): TDocumentDefinitions => {
     return {
         styles,
         pageOrientation: 'landscape',
-        header: headerSection({ title: 'Reporte de horas', showDate: true, showLogo: true }),
+        header: headerSection({ title: 'Reporte de horas', showDate: true, showLogo: true, subtitle }),
         pageMargins: [50, 120, 40, 60],
         content: [
             {
@@ -28,15 +36,9 @@ export const getHoursReport = (): TDocumentDefinitions => {
                     headerRows: 1,
                     widths: ['*', '*', '*', '*', '*'],
                     body: [
-                        ['Fecha', 'Proyecto', 'Tarea', 'Horas', 'Descripción'],
-                        ['2021-01-01', 'Project 1', 'Task 1', '1', 'Description 1'],
-                        ['2021-01-01', 'Project 1', 'Task 2', '2', 'Description 2'],
-                        ['2021-01-01', 'Project 2', 'Task 1', '3', 'Description 3'],
-                        ['2021-01-01', 'Project 2', 'Task 2', '4', 'Description 4'],
-                        ['2021-01-02', 'Project 1', 'Task 1', '1', 'Description 5'],
-                        ['2021-01-02', 'Project 1', 'Task 2', '2', 'Description 6'],
-                        ['2021-01-02', 'Project 2', 'Task 1', '3', 'Description 7'],
-                        ['2021-01-02', 'Project 2', 'Task 2', '4', 'Description 8']
+                        ['Fecha', 'Proyecto', 'Tarea', 'Horas', 'Hito'],
+                        ['2021-01-01', 'Project 1', 'Task 1', 1, 'Hito 1'],
+                        content
                     ]
                 }
             }

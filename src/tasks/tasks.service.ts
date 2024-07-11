@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { HttpException, Injectable, Logger } from '@nestjs/common'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -8,32 +8,54 @@ import { UsersService } from 'src/users/users.service'
 import { TaskDTO } from './dto/task.dto'
 import { ProjectDTO } from 'src/projects/dto/project.dto'
 import { getCurrency } from 'src/shared/helpers/getCurrency'
+import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
+import { Milestone } from 'src/milestone/entities/milestone.entity'
+import { MilestoneService } from 'src/milestone/milestone.service'
+import { ProjectsService } from 'src/projects/projects.service'
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Task)
     private readonly tasksRepository: Repository<Task>,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly milestoneService: MilestoneService,
+    private readonly projectService: ProjectsService
   ) { }
 
-  async create(createTaskDto: CreateTaskDto): Promise<Task> {
-    const user = await this.usersService.findOne(createTaskDto.userId)
-    const taskData = this.tasksRepository.create(createTaskDto)
-    taskData.user = user
+  async create(createTasksDto: CreateTaskDto[]): Promise<Task[]> {
+    const tasks: Task[] = []
 
-    return this.tasksRepository.save(taskData)
+    for (const createTaskDto of createTasksDto) {
+      const user = await this.usersService.findOne(createTaskDto.userId)
+      const milestone = await this.milestoneService.findOne(createTaskDto.milestoneId)
+      const project = await this.projectService.findOne(createTaskDto.projectId)
+
+      const taskData = this.tasksRepository.create(createTaskDto)
+
+      taskData.user = user
+      taskData.milestone = milestone
+      taskData.project = project
+
+      const savedTask = await this.tasksRepository.save(taskData)
+      tasks.push(savedTask)
+    }
+
+    return tasks
   }
 
   async findAll(): Promise<TaskDTO[]> {
-    const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project'] })
+    const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project', 'milestone'] })
+    Logger.log('Fetching all tasks', JSON.stringify(tasks))
 
     return tasks.map<TaskDTO>((task: Task) => {
       const projectDTO: ProjectDTO = {
         id: task.project.id,
         name: task.project.name,
         currency: getCurrency(task.project.currency),
-        companyName: task.project.company.name
+        amount: task.project.amount,
+        client: { id: task.project.client.id, name: task.project.client.name },
+        milestones: task.project.milestones.map<MilestoneDTO>((milestone: Milestone) => { return { id: milestone.id, name: milestone.name } })
       }
 
       const id = task.id

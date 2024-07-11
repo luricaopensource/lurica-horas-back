@@ -5,22 +5,25 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Project } from './entities/project.entity'
 import { IsNull, Repository } from 'typeorm'
 import { ProjectDTO } from './dto/project.dto'
-import { CompanyService } from 'src/company/company.service'
+import { ClientService } from 'src/client/client.service'
 import { IResponse } from 'src/shared/interfaces/response'
 import { getCurrency } from 'src/shared/helpers/getCurrency'
+import { Milestone } from 'src/milestone/entities/milestone.entity'
+import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
 
 @Injectable()
 export class ProjectsService {
   constructor(@InjectRepository(Project)
   private readonly projectRepository: Repository<Project>,
-    private readonly companyService: CompanyService) { }
+    private readonly clientService: ClientService) { }
 
   async create(createProjectDto: CreateProjectDto): Promise<IResponse> {
-    const company = await this.companyService.findOne(createProjectDto.companyId)
+    const client = await this.clientService.findOne(createProjectDto.clientId)
     const projectData = this.projectRepository.create(createProjectDto)
 
     projectData.currency = projectData.currency
-    projectData.company = company
+    projectData.amount = projectData.amount
+    projectData.client = client
 
     const savedProject = await this.projectRepository.save(projectData)
 
@@ -28,14 +31,16 @@ export class ProjectsService {
   }
 
   async findAll() {
-    const projects: Project[] = await this.projectRepository.find({ where: { deletedAt: IsNull() }, relations: ['company'] })
+    const projects: Project[] = await this.projectRepository.find({ where: { deletedAt: IsNull() }, relations: ['client'] })
 
     return projects.map((project: Project) => {
       const projectDTO: ProjectDTO = {
         id: project.id,
         name: project.name,
-        companyName: project.company.name,
-        currency: getCurrency(project.currency)
+        client: { id: project.client.id, name: project.client.name },
+        currency: getCurrency(project.currency),
+        amount: project.amount,
+        milestones: project.milestones.map<MilestoneDTO>((milestone: Milestone) => { return { id: milestone.id, name: milestone.name } })
       }
 
       return projectDTO

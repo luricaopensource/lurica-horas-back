@@ -1,9 +1,8 @@
-import { Company } from "src/company/entities/company.entity"
+import { Client } from "src/client/entities/client.entity"
 import { Milestone } from "src/milestone/entities/milestone.entity"
 import { Task } from "src/tasks/entities/task.entity"
-import { User } from "src/users/entities/user.entity"
 import { UsersToProjects } from "src/users_to_projects/users_to_projects.entity"
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Project {
@@ -15,6 +14,9 @@ export class Project {
 
     @Column()
     public currency: number
+
+    @Column({ type: 'decimal', precision: 15, scale: 2 })
+    public amount: number
 
     @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date
@@ -31,9 +33,9 @@ export class Project {
     @OneToMany(() => Task, task => task.project)
     public tasks: Task[]
 
-    @OneToMany(() => Milestone, milestone => milestone.project)
+    @OneToMany(() => Milestone, milestone => milestone.project, { eager: true })
     public milestones: Milestone[]
 
-    @ManyToOne(() => Company, company => company.projects, { eager: true })
-    public company: Company
+    @ManyToOne(() => Client, client => client.projects, { eager: true })
+    public client: Client
 }

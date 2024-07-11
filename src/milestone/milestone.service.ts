@@ -32,18 +32,16 @@ export class MilestoneService {
 
 
   async findAll(): Promise<MilestoneDTO[]> {
-    const milestones = await this.milestoneRepository.find({ where: { deletedAt: IsNull() }, relations: ['project', 'project.company'] })
+    const milestones = await this.milestoneRepository.find({ where: { deletedAt: IsNull() }, relations: ['project', 'project.client'] })
 
     return milestones.map<MilestoneDTO>((milestone: Milestone) => {
       const id = milestone.id
       const date = milestone.date
       const name = milestone.name
-      const totalAmount = milestone.totalAmount
-      const paidAmount = milestone.paidAmount
-      const surplusAmount = milestone.surplusAmount
+      const amount = milestone.amount
       const projectName = milestone.project.name
 
-      return { id, date, name, totalAmount, paidAmount, surplusAmount, projectName }
+      return { id, date, name, amount, projectName }
     })
   }
 

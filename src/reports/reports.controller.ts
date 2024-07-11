@@ -1,7 +1,8 @@
-import { Controller, Get, Res } from "@nestjs/common"
+import { Body, Controller, Get, Res } from "@nestjs/common"
 import { ReportsService } from "./reports.service"
 import { Response } from "express"
-import { getHoursReport } from './hours.report'
+import { GetReportBody } from "./dto/get-report"
+import { Public } from "src/shared/decorators/public"
 
 @Controller('reports')
 export class ReportsController {
@@ -17,9 +18,10 @@ export class ReportsController {
         pdfDocument.end()
     }
 
+    @Public()
     @Get('hours')
-    async getHoursReport(@Res() response: Response) {
-        const pdfDocument = await this.reportsService.createHoursReport()
+    async getHoursReport(@Res() response: Response, @Body() body: GetReportBody) {
+        const pdfDocument = await this.reportsService.createHoursReport(body)
 
         response.setHeader('Content-type', 'application/pdf')
         pdfDocument.info.Title = 'Hours report'

@@ -1,9 +1,7 @@
 export interface MilestoneDTO {
     id: number
-    date: Date
+    date?: Date
     name: string
-    totalAmount: number
-    paidAmount: number
-    surplusAmount: number
-    projectName: string
+    amount?: number
+    projectName?: string
 }

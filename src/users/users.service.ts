@@ -42,8 +42,8 @@ export class UsersService {
         lastName: user.lastName,
         username: user.username,
         email: user.email,
-        role: getRole(user.role),
-        currency: getCurrency(user.currency),
+        roleName: getRole(user.role),
+        currencyName: getCurrency(user.currency),
         hourlyAmount: user.hourlyAmount,
         monthlyAmount: user.monthlyAmount
       }
@@ -88,8 +88,8 @@ export class UsersService {
       lastName: user.lastName,
       username: user.username,
       email: user.email,
-      role: getRole(user.role),
-      currency: getCurrency(user.currency),
+      roleName: getRole(user.role),
+      currencyName: getCurrency(user.currency),
       hourlyAmount: user.hourlyAmount,
       monthlyAmount: user.monthlyAmount
     }

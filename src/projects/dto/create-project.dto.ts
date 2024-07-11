@@ -1,5 +1,6 @@
 export class CreateProjectDto {
-    readonly companyId: number
+    readonly clientId: number
     readonly name: string
     readonly currency: number
+    readonly amount: number
 }

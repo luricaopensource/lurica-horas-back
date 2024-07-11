@@ -4,8 +4,8 @@ export interface UserDTO {
     lastName: string
     username: string
     email: string
-    role: string
-    currency: string
+    roleName: string
+    currencyName: string
     hourlyAmount: number
     monthlyAmount: number
 }
