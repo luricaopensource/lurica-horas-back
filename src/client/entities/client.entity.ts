@@ -13,7 +13,7 @@ export class Client {
     @OneToMany(() => Project, project => project.client)
     public projects: Project[]
 
-    @ManyToOne(() => Company, company => company.clients, { eager: true })
+    @ManyToOne(() => Company, company => company.clients)
     public company: Company
 
     @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })

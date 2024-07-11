@@ -1,6 +1,6 @@
 import { Company } from "src/companies/entities/company.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Double, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class UsersToCompanies {
@@ -13,7 +13,7 @@ export class UsersToCompanies {
     @ManyToOne(() => Company, company => company.usersToCompanies)
     public company: Company
 
-    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })

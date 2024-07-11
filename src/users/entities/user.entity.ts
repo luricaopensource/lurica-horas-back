@@ -1,7 +1,6 @@
-import { Project } from "src/projects/entities/project.entity"
 import { Task } from "src/tasks/entities/task.entity"
 import { UsersToProjects } from "src/users_to_projects/users_to_projects.entity"
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { UsersToCompanies } from '../../users_to_companies/users_to_companies.entity'
 
 @Entity()

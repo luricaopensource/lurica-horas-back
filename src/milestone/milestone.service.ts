@@ -6,7 +6,6 @@ import { Milestone } from './entities/milestone.entity'
 import { IsNull, Repository } from 'typeorm'
 import { ProjectsService } from 'src/projects/projects.service'
 import { MilestoneDTO } from './dto/milestone.dto'
-import { ProjectDTO } from 'src/projects/dto/project.dto'
 import { IResponse } from 'src/shared/interfaces/response'
 
 @Injectable()
@@ -38,7 +37,7 @@ export class MilestoneService {
       const id = milestone.id
       const date = milestone.date
       const name = milestone.name
-      const amount = milestone.amount
+      const amount = milestone.amountPercentage
       const projectName = milestone.project.name
 
       return { id, date, name, amount, projectName }
