@@ -10,13 +10,15 @@ import { ProjectDTO } from 'src/projects/dto/project.dto'
 import { getCurrency } from 'src/shared/helpers/getCurrency'
 import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
 import { Milestone } from 'src/milestone/entities/milestone.entity'
+import { MilestoneService } from 'src/milestone/milestone.service'
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(Task)
     private readonly tasksRepository: Repository<Task>,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly milestoneService: MilestoneService
   ) { }
 
   async create(createTasksDto: CreateTaskDto[]): Promise<Task[]> {
@@ -30,8 +32,10 @@ export class TasksService {
 
     for (const createTaskDto of createTasksDto) {
       const user = await this.usersService.findOne(createTaskDto.userId)
+      const milestone = await this.milestoneService.findOne(createTaskDto.milestoneId)
       const taskData = this.tasksRepository.create(createTaskDto)
       taskData.user = user
+      taskData.milestone = milestone
 
       const savedTask = await this.tasksRepository.save(taskData)
       tasks.push(savedTask)
