@@ -1,6 +1,7 @@
 import { Client } from "src/client/entities/client.entity"
 import { Milestone } from "src/milestone/entities/milestone.entity"
 import { Task } from "src/tasks/entities/task.entity"
+import { UsersToCompanies } from "src/users_to_companies/users_to_companies.entity"
 import { UsersToProjects } from "src/users_to_projects/users_to_projects.entity"
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 

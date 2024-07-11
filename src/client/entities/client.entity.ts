@@ -1,3 +1,4 @@
+import { Company } from "src/companies/entities/company.entity"
 import { Project } from "src/projects/entities/project.entity"
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
@@ -11,6 +12,9 @@ export class Client {
 
     @OneToMany(() => Project, project => project.client)
     public projects: Project[]
+
+    @ManyToOne(() => Company, company => company.clients, { eager: true })
+    public company: Company
 
     @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date
