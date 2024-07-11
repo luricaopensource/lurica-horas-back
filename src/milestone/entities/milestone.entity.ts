@@ -1,5 +1,6 @@
 import { Project } from "src/projects/entities/project.entity"
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Task } from "src/tasks/entities/task.entity"
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Milestone {
@@ -17,6 +18,9 @@ export class Milestone {
 
     @Column({ type: 'decimal', precision: 15, scale: 2 })
     public amount: number
+
+    @OneToMany(() => Task, task => task.milestone)
+    public tasks: Task[]
 
     @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date
