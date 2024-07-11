@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { HttpException, Injectable, Logger } from '@nestjs/common'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -26,22 +26,23 @@ export class TasksService {
 
     // return this.tasksRepository.save(taskData)
 
-    const tasks: Task[] = [];
-    
-    for (const createTaskDto of createTasksDto) {
-      const user = await this.usersService.findOne(createTaskDto.userId);
-      const taskData = this.tasksRepository.create(createTaskDto);
-      taskData.user = user;
+    const tasks: Task[] = []
 
-      const savedTask = await this.tasksRepository.save(taskData);
-      tasks.push(savedTask);
+    for (const createTaskDto of createTasksDto) {
+      const user = await this.usersService.findOne(createTaskDto.userId)
+      const taskData = this.tasksRepository.create(createTaskDto)
+      taskData.user = user
+
+      const savedTask = await this.tasksRepository.save(taskData)
+      tasks.push(savedTask)
     }
 
-    return tasks;
+    return tasks
   }
 
   async findAll(): Promise<TaskDTO[]> {
     const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project'] })
+    Logger.log('Fetching all tasks', JSON.stringify(tasks))
 
     return tasks.map<TaskDTO>((task: Task) => {
       const projectDTO: ProjectDTO = {

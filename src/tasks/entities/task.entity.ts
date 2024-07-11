@@ -1,7 +1,7 @@
 import { Milestone } from "src/milestone/entities/milestone.entity"
 import { Project } from "src/projects/entities/project.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Double, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Task {
