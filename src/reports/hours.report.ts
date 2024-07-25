@@ -1,12 +1,24 @@
 import { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
 import { headerSection } from "./sections/header.section"
 
+interface IReportHeaders {
+    date: string
+    task: string
+    hours: string
+    milestone: string
+    project?: string
+    employee?: string
+    customer?: string
+}
+
 interface IReportContent {
     date: string
-    project: string
     task: string
     hours: number
     milestone: string
+    project?: string
+    employee?: string
+    customer?: string
 }
 
 const styles: StyleDictionary = {
@@ -23,7 +35,7 @@ const styles: StyleDictionary = {
 }
 
 
-export const getHoursReport = (subtitle: string, content: IReportContent[]): TDocumentDefinitions => {
+export const getHoursReport = (subtitle: string, content: IReportContent[], headers: IReportHeaders[]): TDocumentDefinitions => {
     return {
         styles,
         pageOrientation: 'landscape',
@@ -36,8 +48,7 @@ export const getHoursReport = (subtitle: string, content: IReportContent[]): TDo
                     headerRows: 1,
                     widths: ['*', '*', '*', '*', '*'],
                     body: [
-                        ['Fecha', 'Proyecto', 'Tarea', 'Horas', 'Hito'],
-                        ['2021-01-01', 'Project 1', 'Task 1', 1, 'Hito 1'],
+                        headers,
                         content
                     ]
                 }

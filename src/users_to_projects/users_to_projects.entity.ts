@@ -16,7 +16,7 @@ export class UsersToProjects {
     @Column({ type: 'decimal', precision: 15, scale: 2 })
     public userHourlyAmount: number
 
-    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })

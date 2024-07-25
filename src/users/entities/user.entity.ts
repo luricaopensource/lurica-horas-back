@@ -47,7 +47,7 @@ export class User {
     @Column({ nullable: true, type: 'timestamp', default: null })
     public lastLogin: Date
 
-    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })

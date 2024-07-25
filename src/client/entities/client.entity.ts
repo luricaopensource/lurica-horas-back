@@ -16,7 +16,7 @@ export class Client {
     @ManyToOne(() => Company, company => company.clients)
     public company: Company
 
-    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })

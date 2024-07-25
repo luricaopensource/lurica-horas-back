@@ -46,7 +46,6 @@ export class TasksService {
 
   async findAll(): Promise<TaskDTO[]> {
     const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project', 'milestone'] })
-    Logger.log('Fetching all tasks', JSON.stringify(tasks))
 
     return tasks.map<TaskDTO>((task: Task) => {
       const projectDTO: ProjectDTO = {

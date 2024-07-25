@@ -22,7 +22,7 @@ export class Company {
     @OneToMany(() => UsersToCompanies, usersToCompanies => usersToCompanies.company)
     public usersToCompanies: UsersToCompanies[]
 
-    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })
