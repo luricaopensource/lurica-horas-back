@@ -1,6 +1,6 @@
 import { Project } from "src/projects/entities/project.entity"
 import { Task } from "src/tasks/entities/task.entity"
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Double, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Milestone {
@@ -16,8 +16,8 @@ export class Milestone {
     @Column()
     public date: Date
 
-    @Column({ type: 'decimal', precision: 15, scale: 2 })
-    public amount: number
+    @Column({ type: "float" })
+    public amountPercentage: number
 
     @OneToMany(() => Task, task => task.milestone)
     public tasks: Task[]

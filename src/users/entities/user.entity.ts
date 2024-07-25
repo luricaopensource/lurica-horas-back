@@ -1,7 +1,7 @@
-import { Project } from "src/projects/entities/project.entity"
 import { Task } from "src/tasks/entities/task.entity"
 import { UsersToProjects } from "src/users_to_projects/users_to_projects.entity"
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { UsersToCompanies } from '../../users_to_companies/users_to_companies.entity'
 
 @Entity()
 export class User {
@@ -40,6 +40,12 @@ export class User {
 
     @OneToMany(() => UsersToProjects, usersToProjects => usersToProjects.user)
     public usersToProjects: UsersToProjects[]
+
+    @OneToMany(() => UsersToCompanies, usersToCompanies => usersToCompanies.user)
+    public usersToCompanies: UsersToCompanies[]
+
+    @Column({ nullable: true, type: 'timestamp', default: null })
+    public lastLogin: Date
 
     @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
     public createdAt: Date

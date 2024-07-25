@@ -12,6 +12,7 @@ import { ClientModule } from './client/client.module'
 import { MilestoneModule } from './milestone/milestone.module'
 import { ReportsModule } from './reports/reports.module'
 import { PrinterModule } from './printer/printer.module'
+import { CompaniesModule } from './companies/companies.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { PrinterModule } from './printer/printer.module'
     ClientModule,
     MilestoneModule,
     ReportsModule,
-    PrinterModule
+    PrinterModule,
+    CompaniesModule
   ],
   controllers: [AppController],
   providers: [AppService]

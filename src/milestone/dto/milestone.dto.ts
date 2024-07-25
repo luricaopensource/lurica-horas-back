@@ -2,6 +2,6 @@ export interface MilestoneDTO {
     id: number
     date?: Date
     name: string
-    amount?: number
+    amountPercentage?: number
     projectName?: string
 }

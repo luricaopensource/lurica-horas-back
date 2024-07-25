@@ -1,22 +1,19 @@
-import { Project } from "src/projects/entities/project.entity"
+import { Company } from "src/companies/entities/company.entity"
 import { User } from "src/users/entities/user.entity"
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
-export class UsersToProjects {
+export class UsersToCompanies {
     @PrimaryGeneratedColumn()
     public id: number
 
-    @ManyToOne(() => User, user => user.usersToProjects)
+    @ManyToOne(() => User, user => user.usersToCompanies)
     public user: User
 
-    @ManyToOne(() => Project, project => project.usersToProjects)
-    public project: Project
+    @ManyToOne(() => Company, company => company.usersToCompanies)
+    public company: Company
 
-    @Column({ type: 'decimal', precision: 15, scale: 2 })
-    public userHourlyAmount: number
-
-    @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     public createdAt: Date
 
     @Column({ nullable: true, onUpdate: 'CURRENT_TIMESTAMP', type: 'timestamp', default: null })
