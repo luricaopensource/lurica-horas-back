@@ -30,7 +30,7 @@ export class Project {
     @OneToMany(() => UsersToProjects, usersToProjects => usersToProjects.project)
     public usersToProjects: UsersToProjects[]
 
-    @OneToMany(() => Task, task => task.project)
+    @OneToMany(() => Task, task => task.project, { eager: true })
     public tasks: Task[]
 
     @OneToMany(() => Milestone, milestone => milestone.project, { eager: true })

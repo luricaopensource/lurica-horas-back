@@ -29,13 +29,13 @@ export class Task {
     @Column()
     public status: string
 
-    @ManyToOne(() => User, user => user.tasks)
+    @ManyToOne(() => User, user => user.tasks, { eager: true })
     public user: User
 
     @ManyToOne(() => Project, project => project.tasks)
     public project: Project
 
-    @ManyToOne(() => Milestone, milestone => milestone.tasks)
+    @ManyToOne(() => Milestone, milestone => milestone.tasks, { eager: true })
     public milestone: Milestone
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

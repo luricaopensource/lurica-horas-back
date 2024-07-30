@@ -35,8 +35,8 @@ export class User {
     @Column({ nullable: true, type: 'decimal', precision: 15, scale: 2 })
     public monthlyAmount: number
 
-    @OneToMany(() => Task, task => task.user)
-    public tasks: Task[]
+    @OneToMany(() => Task, task => task.user, { lazy: true })
+    public tasks: Promise<Task[]>
 
     @OneToMany(() => UsersToProjects, usersToProjects => usersToProjects.user)
     public usersToProjects: UsersToProjects[]
