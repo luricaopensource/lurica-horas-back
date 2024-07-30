@@ -35,7 +35,12 @@ const styles: StyleDictionary = {
 }
 
 
-export const getHoursReport = (subtitle: string, content: IReportContent[], headers: IReportHeaders[]): TDocumentDefinitions => {
+export const getHoursReport = (subtitle: string, content: IReportContent[][], headers: IReportHeaders[]): TDocumentDefinitions => {
+    let widths = []
+    headers.forEach(() => { widths.push('*') })
+
+    const tableBody = [headers, ...content]
+
     return {
         styles,
         pageOrientation: 'landscape',
@@ -46,11 +51,8 @@ export const getHoursReport = (subtitle: string, content: IReportContent[], head
                 layout: 'lightHorizontalLines',
                 table: {
                     headerRows: 1,
-                    widths: ['*', '*', '*', '*', '*'],
-                    body: [
-                        headers,
-                        content
-                    ]
+                    widths: widths,
+                    body: tableBody
                 }
             }
         ]
