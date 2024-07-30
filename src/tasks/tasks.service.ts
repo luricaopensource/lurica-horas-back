@@ -69,6 +69,18 @@ export class TasksService {
     })
   }
 
+  async findAllByEmployeeAndProject(employeeId: number, projectId: number): Promise<Task[]> {
+    return await this.tasksRepository.find({ where: { user: { id: employeeId }, project: { id: projectId } }, relations: ['milestone'] })
+  }
+
+  async findAllByProject(projectId: number): Promise<Task[]> {
+    return await this.tasksRepository.find({ where: { project: { id: projectId } } })
+  }
+
+  async findAllByEmployee(employeeId: number): Promise<Task[]> {
+    return await this.tasksRepository.find({ where: { user: { id: employeeId } } })
+  }
+
   async findOne(id: number): Promise<Task> {
     const task = await this.tasksRepository.findOneBy({ id })
     if (!task) { throw new HttpException(`Task with id ${id} not found`, 404) }

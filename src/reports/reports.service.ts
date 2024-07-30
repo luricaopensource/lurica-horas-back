@@ -9,21 +9,9 @@ import { ClientService } from "src/client/client.service"
 import { Project } from "src/projects/entities/project.entity"
 import { User } from "src/users/entities/user.entity"
 import { Client } from "src/client/entities/client.entity"
-
-const getHeaderName = (name: string) => {
-    switch (name) {
-        case 'projectId':
-            return 'Proyecto:'
-        case 'dateFrom':
-            return 'Desde:'
-        case 'dateTo':
-            return 'Hasta:'
-        case 'employeeId':
-            return 'Empleado:'
-        default:
-            return 'Cliente:'
-    }
-}
+import { TasksService } from "src/tasks/tasks.service"
+import { Task } from "src/tasks/entities/task.entity"
+import { DateFormatter } from "src/helpers"
 
 @Injectable()
 export class ReportsService {
@@ -31,7 +19,8 @@ export class ReportsService {
         private readonly printerService: PrinterService,
         private readonly projectService: ProjectsService,
         private readonly employeeService: UsersService,
-        private readonly clientService: ClientService
+        private readonly clientService: ClientService,
+        private readonly tasksService: TasksService
     ) { }
 
     createReport() {
@@ -62,31 +51,85 @@ export class ReportsService {
             if (dateTo) { subtitle += `Hasta: ${dateTo} ` }
 
             if (project && employee && customer) {
-                customer.projects.forEach((project: Project) => {
-                    Logger.log(JSON.stringify(project))
+                for (const project of customer.projects) {
+                    // Find all hours by project and employee ID
+                    const hours = await this.tasksService.findAllByEmployeeAndProject(project.id, employee.id)
+                    hours.forEach((hour) => {
+                        content.push([
+                            DateFormatter.getDDMMYYYY(hour.createdAt),
+                            hour.description,
+                            hour.hours,
+                            hour.milestone.name
+                        ])
+                    })
+                }
+
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito']
+                if (content.length == 0) { content = ['', '', '', ''] }
+            }
+            else if (project && employee) {
+                const hours = await this.tasksService.findAllByEmployeeAndProject(employeeId, projectId)
+                hours.forEach((hour) => {
+                    content.push([
+                        hour.createdAt,
+                        hour.description,
+                        hour.hours,
+                        hour.milestone.name
+                    ])
                 })
 
-                return
-
-                content = []
-                headers = []
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito']
+                if (content.length == 0) { content = ['', '', '', ''] }
             }
-            else if (project && employee) { }
-            else if (project && customer) { }
-            else if (employee && customer) { }
-            else if (project) { }
-            else if (employee) { }
-            else if (customer) { }
+            else if (project && customer) {
+                customer.projects.forEach(async (project: Project) => {
+                    // Find all hours by project ID
+                    const hours = await this.tasksService.findAllByProject(project.id)
+                    hours.forEach((hour: Task) => {
+                        content.push([
+                            hour.createdAt,
+                            hour.description,
+                            hour.hours,
+                            hour.milestone.name,
+                            hour.user.firstName + ' ' + hour.user.lastName
+                        ])
+                    })
+                })
+
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Empleado']
+                if (content.length == 0) { content = ['', '', '', '', ''] }
+            }
+            else if (employee && customer) {
+                customer.projects.forEach(async (project: Project) => {
+                    // Find all hours by employee ID
+                    const hours = await this.tasksService.findAllByEmployee(employee.id)
+                    hours.forEach((hour) => {
+                        content.push([
+                            hour.createdAt,
+                            hour.description,
+                            hour.hours,
+                            hour.milestone.name,
+                            project.name
+                        ])
+                    })
+                })
+
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Proyecto']
+                if (content.length == 0) { content = ['', '', '', '', ''] }
+            }
+            else if (project) {
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Empleado']
+                if (content.length == 0) { content = ['', '', '', '', ''] }
+            }
+            else if (employee) {
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Proyecto']
+                if (content.length == 0) { content = ['', '', '', '', ''] }
+            }
+            else if (customer) {
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Proyecto', 'Empleado']
+                if (content.length == 0) { content = ['', '', '', '', '', ''] }
+            }
             else { }
-
-
-            // 1. If there's only project ID in the request, get all the hours for that project, add a column of employee name and show the project name in the subtitle
-            // 2. If there's only employee ID in the request, get all the hours for that employee and add a column of project name
-            // 3. If there's only customer ID in the request, get all the hours for that customer and add a column of project name and employee name
-            // 4. If there's project ID and employee ID in the request, get all the hours for that project and employee and show the employee name as a subtitle
-            // 5. If there's project ID and customer ID in the request
-            // 5. get all the hours for that project and customer and show the customer name as a subtitle also show the employee name in a column
-            // 6. If there's employee ID and customer ID in the request, get all the hours for that employee and customer and show the customer name and the employee name as a subtitle also show the project name in a column
         } catch (error) {
             throw error
         }
