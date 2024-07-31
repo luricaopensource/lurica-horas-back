@@ -46,7 +46,7 @@ export class MilestoneService {
 
   async findOne(id: number): Promise<Milestone> {
     const milestone = await this.milestoneRepository.findOneBy({ id })
-    // if (!milestone) { throw new HttpException(`Milestone with id ${id} not found`, 404) };
+    if (!milestone) { throw new HttpException(`Milestone with id ${id} not found`, 404) };
     return milestone
   }
 

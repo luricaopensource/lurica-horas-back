@@ -28,13 +28,16 @@ export class TasksService {
 
     for (const createTaskDto of createTasksDto) {
       const user = await this.usersService.findOne(createTaskDto.userId)
-      const milestone = await this.milestoneService.findOne(createTaskDto.milestoneId)
       const project = await this.projectService.findOne(createTaskDto.projectId)
 
       const taskData = this.tasksRepository.create(createTaskDto)
 
+      if (createTaskDto.milestoneId) {
+        const milestone = await this.milestoneService.findOne(createTaskDto.milestoneId)
+        taskData.milestone = milestone
+      }
+
       taskData.user = user
-      taskData.milestone = milestone
       taskData.project = project
 
       const savedTask = await this.tasksRepository.save(taskData)
@@ -54,7 +57,6 @@ export class TasksService {
         currency: getCurrency(task.project.currency),
         amount: task.project.amount,
         client: { id: task.project.client.id, name: task.project.client.name },
-        milestones: task.project.milestones.map<MilestoneDTO>((milestone: Milestone) => { return { id: milestone.id, name: milestone.name } })
       }
 
       const id = task.id
@@ -64,8 +66,9 @@ export class TasksService {
       const hours = task.hours
       const status = task.status
       const paid = task.paid
+      const milestone = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
 
-      return { id, dateTo, project, description, hours, status, paid }
+      return { id, dateTo, project, description, hours, status, paid, milestone }
     })
   }
 
