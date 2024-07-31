@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common"
 import { PrinterService } from "src/printer/printer.service"
 import { getSampleReport } from "./sample-report.report"
-import { getHoursReport } from "./hours.report"
+import { getHoursReport } from "./tasks.report"
 import { GetReportBody } from "./dto/get-report"
 import { ProjectsService } from '../projects/projects.service'
 import { UsersService } from "src/users/users.service"
@@ -52,14 +52,15 @@ export class ReportsService {
 
             if (project && employee && customer) {
                 for (const project of customer.projects) {
-                    // Find all hours by project and employee ID
-                    const hours = await this.tasksService.findAllByEmployeeAndProject(project.id, employee.id)
-                    hours.forEach((hour) => {
+                    // Find all tasks by project and employee ID
+                    const tasks = await this.tasksService.findAllByEmployeeAndProject(project.id, employee.id)
+                    tasks.forEach((task) => {
+                        const milestoneName = task.milestone ? task.milestone.name : ''
                         content.push([
-                            DateFormatter.getDDMMYYYY(hour.createdAt),
-                            hour.description,
-                            hour.hours,
-                            hour.milestone.name
+                            DateFormatter.getDDMMYYYY(task.createdAt),
+                            task.description,
+                            task.hours,
+                            milestoneName
                         ])
                     })
                 }
@@ -68,13 +69,14 @@ export class ReportsService {
                 if (content.length == 0) { content.push(['', '', '', '']) }
             }
             else if (project && employee) {
-                const hours = await this.tasksService.findAllByEmployeeAndProject(employeeId, projectId)
-                hours.forEach((hour) => {
+                const tasks = await this.tasksService.findAllByEmployeeAndProject(employeeId, projectId)
+                tasks.forEach((task) => {
+                    const milestoneName = task.milestone ? task.milestone.name : ''
                     content.push([
-                        DateFormatter.getDDMMYYYY(hour.createdAt),
-                        hour.description,
-                        hour.hours,
-                        hour.milestone.name
+                        DateFormatter.getDDMMYYYY(task.createdAt),
+                        task.description,
+                        task.hours,
+                        milestoneName
                     ])
                 })
 
@@ -82,15 +84,16 @@ export class ReportsService {
                 if (content.length == 0) { content.push(['', '', '', '']) }
             }
             else if (project && customer) {
-                // Find all hours by project ID
-                const hours = await this.tasksService.findAllByProject(project.id)
-                hours.forEach((hour) => {
+                // Find all tasks by project ID
+                const tasks = await this.tasksService.findAllByProject(project.id)
+                tasks.forEach((task) => {
+                    const milestoneName = task.milestone ? task.milestone.name : ''
                     content.push([
-                        DateFormatter.getDDMMYYYY(hour.createdAt),
-                        hour.description,
-                        hour.hours,
-                        hour.milestone.name,
-                        hour.user.firstName + ' ' + hour.user.lastName
+                        DateFormatter.getDDMMYYYY(task.createdAt),
+                        task.description,
+                        task.hours,
+                        milestoneName,
+                        task.user.firstName + ' ' + task.user.lastName
                     ])
                 })
 
@@ -99,14 +102,15 @@ export class ReportsService {
             }
             else if (employee && customer) {
                 for (project of customer.projects) {
-                    // Find all hours by employee ID and project ID
-                    const hours = await this.tasksService.findAllByEmployeeAndProject(employee.id, project.id)
-                    hours.forEach((hour) => {
+                    // Find all tasks by employee ID and project ID
+                    const tasks = await this.tasksService.findAllByEmployeeAndProject(employee.id, project.id)
+                    tasks.forEach((task) => {
+                        const milestoneName = task.milestone ? task.milestone.name : ''
                         content.push([
-                            DateFormatter.getDDMMYYYY(hour.createdAt),
-                            hour.description,
-                            hour.hours,
-                            hour.milestone.name,
+                            DateFormatter.getDDMMYYYY(task.createdAt),
+                            task.description,
+                            task.hours,
+                            milestoneName,
                             project.name
                         ])
                     })
@@ -117,11 +121,12 @@ export class ReportsService {
             }
             else if (project) {
                 project.tasks.forEach((task: Task) => {
+                    const milestoneName = task.milestone ? task.milestone.name : ''
                     content.push([
                         DateFormatter.getDDMMYYYY(task.createdAt),
                         task.description,
                         task.hours,
-                        task.milestone.name,
+                        milestoneName,
                         task.user.firstName + ' ' + task.user.lastName
                     ])
                 })
@@ -133,11 +138,12 @@ export class ReportsService {
                 const tasks = await employee.tasks
 
                 tasks.forEach((task: Task) => {
+                    const milestoneName = task.milestone ? task.milestone.name : ''
                     content.push([
                         DateFormatter.getDDMMYYYY(task.createdAt),
                         task.description,
                         task.hours,
-                        task.milestone.name,
+                        milestoneName,
                         task.project.name
                     ])
                 })
@@ -150,11 +156,12 @@ export class ReportsService {
                     const tasks = await this.tasksService.findAllByProject(project.id)
 
                     tasks.forEach((task: Task) => {
+                        const milestoneName = task.milestone ? task.milestone.name : ''
                         content.push([
                             DateFormatter.getDDMMYYYY(task.createdAt),
                             task.description,
                             task.hours,
-                            task.milestone.name,
+                            milestoneName,
                             project.name,
                             task.user.firstName + ' ' + task.user.lastName
                         ])

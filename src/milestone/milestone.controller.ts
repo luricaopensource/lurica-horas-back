@@ -18,6 +18,11 @@ export class MilestoneController {
     return this.milestoneService.findAll();
   }
 
+  @Get('project/:projectId')
+  findAllByProject(@Param('projectId') projectId: number) {
+    return this.milestoneService.findAllByProject(+projectId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Milestone> {
     return this.milestoneService.findOne(+id);
