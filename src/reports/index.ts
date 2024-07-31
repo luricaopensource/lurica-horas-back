@@ -1,2 +1,2 @@
 export * from './sample-report.report'
-export * from './hours.report'
+export * from './tasks.report'

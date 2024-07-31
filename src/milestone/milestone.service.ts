@@ -44,9 +44,23 @@ export class MilestoneService {
     })
   }
 
+  async findAllByProject(projectId: number): Promise<MilestoneDTO[]> {
+    const milestones = await this.milestoneRepository.find({ where: { project: {id: projectId }, deletedAt: IsNull() }, relations: ['project', 'project.client'] })
+
+    return milestones.map<MilestoneDTO>((milestone: Milestone) => {
+      const id = milestone.id
+      const date = milestone.date
+      const name = milestone.name
+      const amount = milestone.amountPercentage
+      const projectName = milestone.project.name
+
+      return { id, date, name, amount, projectName }
+    })
+  }
+
   async findOne(id: number): Promise<Milestone> {
     const milestone = await this.milestoneRepository.findOneBy({ id })
-    // if (!milestone) { throw new HttpException(`Milestone with id ${id} not found`, 404) };
+    if (!milestone) { throw new HttpException(`Milestone with id ${id} not found`, 404) };
     return milestone
   }
 

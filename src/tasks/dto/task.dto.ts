@@ -1,3 +1,5 @@
+import { MilestoneDTO } from "src/milestone/dto/milestone.dto"
+import { Milestone } from "src/milestone/entities/milestone.entity"
 import { ProjectDTO } from "src/projects/dto/project.dto"
 
 export interface TaskDTO {
@@ -8,4 +10,5 @@ export interface TaskDTO {
     hours: number
     status: string
     paid: boolean
+    milestone: MilestoneDTO
 }

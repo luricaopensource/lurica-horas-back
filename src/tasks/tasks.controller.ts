@@ -17,8 +17,8 @@ export class TasksController {
     return this.tasksService.findAll()
   }
 
-  @Get()
-  findAllByEmployee(@Param('employeeId') employeeId: string) {
+  @Get('employee/:employeeId')
+  findAllByEmployee(@Param('employeeId') employeeId: number) {
     return this.tasksService.findAllByEmployee(+employeeId);
   }
 

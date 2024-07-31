@@ -7,5 +7,5 @@ export interface ProjectDTO {
     client: ClientDTO
     currency: string,
     amount: number,
-    milestones: MilestoneDTO[]
+    milestones ?: MilestoneDTO[]
 }
