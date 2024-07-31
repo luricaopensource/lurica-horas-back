@@ -1,5 +1,6 @@
 import { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
 import { headerSection } from "./sections/header.section"
+import { Logger } from "@nestjs/common"
 
 interface IReportHeaders {
     date: string

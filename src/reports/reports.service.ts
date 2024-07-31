@@ -41,7 +41,7 @@ export class ReportsService {
             let customer: Client | null = null
 
             if (projectId) { project = await this.projectService.findOne(projectId) }
-            if (employeeId) { employee = await this.employeeService.findOne(employeeId) }
+            if (employeeId) { employee = await this.employeeService.findOne(employeeId, ['tasks', 'tasks.project']) }
             if (customerId) { customer = await this.clientService.findOneWithProjects(customerId) }
 
             if (project) { subtitle += `Proyecto: ${project.name} ` }
@@ -65,13 +65,13 @@ export class ReportsService {
                 }
 
                 headers = ['Fecha', 'Tarea', 'Horas', 'Hito']
-                if (content.length == 0) { content = ['', '', '', ''] }
+                if (content.length == 0) { content.push(['', '', '', '']) }
             }
             else if (project && employee) {
                 const hours = await this.tasksService.findAllByEmployeeAndProject(employeeId, projectId)
                 hours.forEach((hour) => {
                     content.push([
-                        hour.createdAt,
+                        DateFormatter.getDDMMYYYY(hour.createdAt),
                         hour.description,
                         hour.hours,
                         hour.milestone.name
@@ -79,55 +79,90 @@ export class ReportsService {
                 })
 
                 headers = ['Fecha', 'Tarea', 'Horas', 'Hito']
-                if (content.length == 0) { content = ['', '', '', ''] }
+                if (content.length == 0) { content.push(['', '', '', '']) }
             }
             else if (project && customer) {
-                customer.projects.forEach(async (project: Project) => {
-                    // Find all hours by project ID
-                    const hours = await this.tasksService.findAllByProject(project.id)
-                    hours.forEach((hour: Task) => {
-                        content.push([
-                            hour.createdAt,
-                            hour.description,
-                            hour.hours,
-                            hour.milestone.name,
-                            hour.user.firstName + ' ' + hour.user.lastName
-                        ])
-                    })
+                // Find all hours by project ID
+                const hours = await this.tasksService.findAllByProject(project.id)
+                hours.forEach((hour) => {
+                    content.push([
+                        DateFormatter.getDDMMYYYY(hour.createdAt),
+                        hour.description,
+                        hour.hours,
+                        hour.milestone.name,
+                        hour.user.firstName + ' ' + hour.user.lastName
+                    ])
                 })
 
                 headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Empleado']
-                if (content.length == 0) { content = ['', '', '', '', ''] }
+                if (content.length == 0) { content.push(['', '', '', '', '']) }
             }
             else if (employee && customer) {
-                customer.projects.forEach(async (project: Project) => {
-                    // Find all hours by employee ID
-                    const hours = await this.tasksService.findAllByEmployee(employee.id)
+                for (project of customer.projects) {
+                    // Find all hours by employee ID and project ID
+                    const hours = await this.tasksService.findAllByEmployeeAndProject(employee.id, project.id)
                     hours.forEach((hour) => {
                         content.push([
-                            hour.createdAt,
+                            DateFormatter.getDDMMYYYY(hour.createdAt),
                             hour.description,
                             hour.hours,
                             hour.milestone.name,
                             project.name
                         ])
                     })
+                }
+
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Proyecto']
+                if (content.length == 0) { content.push(['', '', '', '', '']) }
+            }
+            else if (project) {
+                project.tasks.forEach((task: Task) => {
+                    content.push([
+                        DateFormatter.getDDMMYYYY(task.createdAt),
+                        task.description,
+                        task.hours,
+                        task.milestone.name,
+                        task.user.firstName + ' ' + task.user.lastName
+                    ])
+                })
+
+                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Empleado']
+                if (content.length == 0) { content.push(['', '', '', '']) }
+            }
+            else if (employee) {
+                const tasks = await employee.tasks
+
+                tasks.forEach((task: Task) => {
+                    content.push([
+                        DateFormatter.getDDMMYYYY(task.createdAt),
+                        task.description,
+                        task.hours,
+                        task.milestone.name,
+                        task.project.name
+                    ])
                 })
 
                 headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Proyecto']
-                if (content.length == 0) { content = ['', '', '', '', ''] }
-            }
-            else if (project) {
-                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Empleado']
-                if (content.length == 0) { content = ['', '', '', '', ''] }
-            }
-            else if (employee) {
-                headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Proyecto']
-                if (content.length == 0) { content = ['', '', '', '', ''] }
+                if (content.length == 0) { content.push(['', '', '', '']) }
             }
             else if (customer) {
+                for (project of customer.projects) {
+                    const tasks = await this.tasksService.findAllByProject(project.id)
+
+                    tasks.forEach((task: Task) => {
+                        content.push([
+                            DateFormatter.getDDMMYYYY(task.createdAt),
+                            task.description,
+                            task.hours,
+                            task.milestone.name,
+                            project.name,
+                            task.user.firstName + ' ' + task.user.lastName
+                        ])
+                    })
+                }
+
                 headers = ['Fecha', 'Tarea', 'Horas', 'Hito', 'Proyecto', 'Empleado']
-                if (content.length == 0) { content = ['', '', '', '', '', ''] }
+                if (content.length == 0) { content.push(['', '', '', '', '', '']) }
             }
             else { }
         } catch (error) {

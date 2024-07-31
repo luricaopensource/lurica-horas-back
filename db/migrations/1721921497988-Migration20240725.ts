@@ -9,10 +9,12 @@ export class Migration202407251721921497988 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`users_to_projects\` ADD \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP`)
         await queryRunner.query(`ALTER TABLE \`users_to_projects\` ADD \`updatedAt\` timestamp NULL ON UPDATE CURRENT_TIMESTAMP`)
         await queryRunner.query(`ALTER TABLE \`users_to_projects\` ADD \`deletedAt\` timestamp NULL`)
-        await queryRunner.query(`ALTER TABLE \`milestone\` DROP COLUMN \`amountPercentage\``)
         await queryRunner.query(`ALTER TABLE \`milestone\` ADD \`amountPercentage\` float NOT NULL`)
         await queryRunner.query(`ALTER TABLE \`users_to_companies\` ADD CONSTRAINT \`FK_b5b99a90e92d2f7e578a4e46c3d\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await queryRunner.query(`ALTER TABLE \`users_to_companies\` ADD CONSTRAINT \`FK_cd7788ff3412eb02b8e42d1beff\` FOREIGN KEY (\`companyId\`) REFERENCES \`company\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`)
+        await queryRunner.query(`ALTER TABLE \`milestone\` DROP COLUMN \`amount\``)
+        await queryRunner.query(`ALTER TABLE \`user\` ADD \`lastLogin\` timestamp NULL`)
+        await queryRunner.query(`ALTER TABLE \`client\` ADD \`companyId\` int NULL`)
         await queryRunner.query(`ALTER TABLE \`client\` ADD CONSTRAINT \`FK_3d7a0b6e0f1d0c0ab1bc189645f\` FOREIGN KEY (\`companyId\`) REFERENCES \`company\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`)
     }
 

@@ -52,8 +52,10 @@ export class UsersService {
     })
   }
 
-  async findOne(id: number): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id })
+  async findOne(id: number, relations: string[] = []): Promise<User> {
+    const options = relations.length ? { where: { id }, relations } : { where: { id } }
+
+    const user = await this.userRepository.findOne(options)
     if (!user) { throw new HttpException(`Usuario no encontrado`, 404) }
     return user
   }
