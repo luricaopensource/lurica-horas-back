@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { HttpException, Injectable, Logger } from '@nestjs/common'
 import { CreateClientDto } from './dto/create-client.dto'
 import { UpdateClientDto } from './dto/update-client.dto'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -24,7 +24,7 @@ export class ClientService {
     clientData.company = company;
 
 
-    return this.clientRepository.save(createClientDto);
+    return this.clientRepository.save(clientData);
 
   }
 
