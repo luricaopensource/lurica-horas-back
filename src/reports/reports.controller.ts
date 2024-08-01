@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Res } from "@nestjs/common"
+import { Body, Controller, Get, Post, Res } from "@nestjs/common"
 import { ReportsService } from "./reports.service"
 import { Response } from "express"
 import { GetReportBody } from "./dto/get-report"
@@ -18,8 +18,7 @@ export class ReportsController {
         pdfDocument.end()
     }
 
-    @Public()
-    @Get('hours')
+    @Post('hours')
     async getHoursReport(@Res() response: Response, @Body() body: GetReportBody) {
         const pdfDocument = await this.reportsService.createHoursReport(body)
 
