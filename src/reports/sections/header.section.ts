@@ -2,7 +2,7 @@ import path from "path"
 import { Content, ContentImage } from "pdfmake/interfaces"
 import { DateFormatter } from "src/helpers"
 
-const basePath = path.resolve(__dirname, '../../../')
+const basePath = path.resolve(__dirname, '../../../../')
 
 const filePath = path.join(basePath, 'src/assets')
 
