@@ -3,7 +3,9 @@ import path from 'path'
 import PdfPrinter from 'pdfmake'
 import { BufferOptions, TDocumentDefinitions } from "pdfmake/interfaces"
 
-const filePath = path.join(__dirname, 'fonts/')
+const basePath = path.resolve(__dirname, '../../../')
+
+const filePath = path.join(basePath, 'fonts/')
 
 const fonts = {
     Roboto: {
