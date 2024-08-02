@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res } from "@nestjs/common"
+import { Body, Controller, Get, Logger, Post, Res } from "@nestjs/common"
 import { ReportsService } from "./reports.service"
 import { Response } from "express"
 import { GetReportBody } from "./dto/get-report"
@@ -28,6 +28,7 @@ export class ReportsController {
             pdfDocument.pipe(response)
             pdfDocument.end()
         } catch (error) {
+            Logger.error(JSON.stringify(error))
             response.status(500).send({ message: error.message })
         }
     }
