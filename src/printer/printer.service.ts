@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import path from 'path'
 import PdfPrinter from 'pdfmake'
 import { BufferOptions, TDocumentDefinitions } from "pdfmake/interfaces"
@@ -16,11 +16,11 @@ const fonts = {
     }
 }
 
+Logger.log(fonts)
+
 @Injectable()
 export class PrinterService {
-
     private printer = new PdfPrinter(fonts)
-
 
     createPdf(docDefinition: TDocumentDefinitions, options: BufferOptions = {}): PDFKit.PDFDocument {
         return this.printer.createPdfKitDocument(docDefinition, options)
