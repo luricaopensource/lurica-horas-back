@@ -10,21 +10,21 @@ import { CompaniesService } from 'src/companies/companies.service'
 export class ClientService {
 
   constructor(
-    @InjectRepository(Client) 
+    @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
     private readonly companyService: CompaniesService
-    ) { }
+  ) { }
 
   async create(createClientDto: CreateClientDto): Promise<Client> {
     const company = await this.companyService.findOne(createClientDto.companyId)
 
     const clientData = this.clientRepository.create(createClientDto)
 
-    clientData.name = createClientDto.name;
-    clientData.company = company;
+    clientData.name = createClientDto.name
+    clientData.company = company
 
 
-    return this.clientRepository.save(clientData);
+    return this.clientRepository.save(clientData)
 
   }
 
@@ -34,21 +34,25 @@ export class ClientService {
 
   async findOne(id: number): Promise<Client> {
     const client = await this.clientRepository.findOneBy({ id })
-    if (!client) { throw new HttpException(`Client not found`, 404) }
+    if (!client) { throw new HttpException(`Cliente no encontrado.`, 404) }
     return client
   }
 
   async findOneByName(name: string): Promise<Client> {
     const client = await this.clientRepository.findOne({ where: { name } })
-    if (!client) { throw new HttpException(`Client ${name} not found`, 404) }
+    if (!client) { throw new HttpException(`Cliente ${name} no encontrado.`, 404) }
     return client
   }
 
   async findOneWithProjects(id: number): Promise<Client> {
-    return await this.clientRepository.findOne({
+    const client = await this.clientRepository.findOne({
       where: { id },
       relations: ['projects'],
     })
+
+    if (!client) { throw new HttpException(`Cliente no encontrado.`, 404) }
+
+    return client
   }
 
   async update(id: number, updateClientDto: UpdateClientDto): Promise<Client> {
