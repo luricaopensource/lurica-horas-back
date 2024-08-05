@@ -95,6 +95,7 @@ export class UsersService {
       hourlyAmount: user.hourlyAmount,
       monthlyAmount: user.monthlyAmount,
       companies: user.usersToCompanies.map((usersToCompanies) => {
+        Logger.log(usersToCompanies)
         return {
           id: usersToCompanies.company.id,
           name: usersToCompanies.company.name
