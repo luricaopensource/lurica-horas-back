@@ -1,5 +1,10 @@
+import path from "path"
 import { Content, ContentImage } from "pdfmake/interfaces"
 import { DateFormatter } from "src/helpers"
+
+const basePath = path.resolve(__dirname, '../../../../')
+
+const filePath = path.join(basePath, 'src/assets')
 
 interface HeaderSection {
     title?: string
@@ -17,7 +22,7 @@ const currentDate: Content = {
 }
 
 const logo: ContentImage = {
-    image: 'src/assets/lurica-logo.png',
+    image: `${filePath}/lurica-logo.png`,
     width: 80,
     height: 80,
     alignment: 'left',

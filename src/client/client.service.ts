@@ -55,21 +55,25 @@ export class ClientService {
 
   async findOne(id: number): Promise<Client> {
     const client = await this.clientRepository.findOneBy({ id })
-    if (!client) { throw new HttpException(`Client not found`, 404) }
+    if (!client) { throw new HttpException(`Cliente no encontrado.`, 404) }
     return client
   }
 
   async findOneByName(name: string): Promise<Client> {
     const client = await this.clientRepository.findOne({ where: { name } })
-    if (!client) { throw new HttpException(`Client ${name} not found`, 404) }
+    if (!client) { throw new HttpException(`Cliente ${name} no encontrado.`, 404) }
     return client
   }
 
   async findOneWithProjects(id: number): Promise<Client> {
-    return await this.clientRepository.findOne({
+    const client = await this.clientRepository.findOne({
       where: { id },
       relations: ['projects'],
     })
+
+    if (!client) { throw new HttpException(`Cliente no encontrado.`, 404) }
+
+    return client
   }
 
   async update(id: number, updateClientDto: UpdateClientDto): Promise<Client> {

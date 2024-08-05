@@ -1,4 +1,4 @@
-import { IUsersToCompaniesDTO } from "src/users_to_companies/dto/users_to_companies_dto"
+import { UsersToCompaniesDTO } from "src/users_to_companies/users_to_companies.dto"
 
 export interface UserDTO {
     id: number
@@ -10,5 +10,5 @@ export interface UserDTO {
     currencyName: string
     hourlyAmount: number
     monthlyAmount: number,
-    companies: IUsersToCompaniesDTO[]
+    companies?: UsersToCompaniesDTO[]
 }

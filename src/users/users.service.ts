@@ -91,9 +91,7 @@ export class UsersService {
   async getUserFromBearerToken(): Promise<UserDTO> {
     const userId = this.request['user'].sub
 
-    const user = await this.findOne(userId)
-
-    if (!user.usersToCompanies) user.usersToCompanies = []
+    const user = await this.findOne(userId, ['usersToCompanies'])
 
     return {
       id: user.id,
@@ -105,10 +103,10 @@ export class UsersService {
       currencyName: getCurrency(user.currency),
       hourlyAmount: user.hourlyAmount,
       monthlyAmount: user.monthlyAmount,
-      companies: user.usersToCompanies.map((userToCompany) => {
+      companies: user.usersToCompanies.map((usersToCompanies) => {
         return {
-          id: userToCompany.company.id,
-          name: userToCompany.company.name
+          id: usersToCompanies.company.id,
+          name: usersToCompanies.company.name
         }
       })
     }

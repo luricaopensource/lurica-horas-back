@@ -173,6 +173,7 @@ export class ReportsService {
             }
             else { }
         } catch (error) {
+            Logger.log(error)
             throw error
         }
 

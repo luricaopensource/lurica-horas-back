@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res } from "@nestjs/common"
+import { Body, Controller, Get, Logger, Post, Res } from "@nestjs/common"
 import { ReportsService } from "./reports.service"
 import { Response } from "express"
 import { GetReportBody } from "./dto/get-report"
@@ -20,11 +20,16 @@ export class ReportsController {
 
     @Post('hours')
     async getHoursReport(@Res() response: Response, @Body() body: GetReportBody) {
-        const pdfDocument = await this.reportsService.createHoursReport(body)
+        try {
+            const pdfDocument = await this.reportsService.createHoursReport(body)
 
-        response.setHeader('Content-type', 'application/pdf')
-        pdfDocument.info.Title = 'Hours report'
-        pdfDocument.pipe(response)
-        pdfDocument.end()
+            response.setHeader('Content-type', 'application/pdf')
+            pdfDocument.info.Title = 'Hours report'
+            pdfDocument.pipe(response)
+            pdfDocument.end()
+        } catch (error) {
+            Logger.error(JSON.stringify(error))
+            response.status(500).send({ message: error.message })
+        }
     }
 }
