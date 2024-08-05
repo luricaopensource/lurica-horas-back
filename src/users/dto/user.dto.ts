@@ -1,3 +1,5 @@
+import { UsersToCompaniesDTO } from "src/users_to_companies/users_to_companies.dto"
+
 export interface UserDTO {
     id: number
     firstName: string
@@ -7,5 +9,6 @@ export interface UserDTO {
     roleName: string
     currencyName: string
     hourlyAmount: number
-    monthlyAmount: number
+    monthlyAmount: number,
+    companies?: UsersToCompaniesDTO[]
 }

@@ -16,8 +16,6 @@ const fonts = {
     }
 }
 
-Logger.log(fonts)
-
 @Injectable()
 export class PrinterService {
     private printer = new PdfPrinter(fonts)
