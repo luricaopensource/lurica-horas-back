@@ -1,10 +1,10 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common'
-import { CreateProjectDto } from './dto/create-project.dto'
-import { UpdateProjectDto } from './dto/update-project.dto'
+import { CreateProjectClientDTO } from './dto/create-project.dto'
+import { UpdateProjectClientDTO } from './dto/update-project.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Project } from './entities/project.entity'
 import { IsNull, Repository } from 'typeorm'
-import { ProjectDTO } from './dto/project.dto'
+import { ProjectClientDTO } from './dto/project.dto'
 import { ClientService } from 'src/client/client.service'
 import { IResponse } from 'src/shared/interfaces/response'
 import { getCurrency } from 'src/shared/helpers/getCurrency'
@@ -17,9 +17,9 @@ export class ProjectsService {
   private readonly projectRepository: Repository<Project>,
     private readonly clientService: ClientService) { }
 
-  async create(createProjectDto: CreateProjectDto): Promise<IResponse> {
-    const client = await this.clientService.findOne(createProjectDto.clientId)
-    const projectData = this.projectRepository.create(createProjectDto)
+  async create(createProjectClientDTO: CreateProjectClientDTO): Promise<IResponse> {
+    const client = await this.clientService.findOne(createProjectClientDTO.clientId)
+    const projectData = this.projectRepository.create(createProjectClientDTO)
 
     projectData.currency = projectData.currency
     projectData.amount = projectData.amount
@@ -34,7 +34,7 @@ export class ProjectsService {
     const projects: Project[] = await this.projectRepository.find({ where: { deletedAt: IsNull() }, relations: ['client'] })
 
     return projects.map((project: Project) => {
-      const projectDTO: ProjectDTO = {
+      const ProjectClientDTO: ProjectClientDTO = {
         id: project.id,
         name: project.name,
         client: { id: project.client.id, name: project.client.name },
@@ -43,7 +43,7 @@ export class ProjectsService {
         milestones: project.milestones.map<MilestoneDTO>((milestone: Milestone) => { return { id: milestone.id, name: milestone.name } })
       }
 
-      return projectDTO
+      return ProjectClientDTO
     })
   }
 
@@ -53,9 +53,9 @@ export class ProjectsService {
     return project
   }
 
-  async update(id: number, updateProjectDto: UpdateProjectDto) {
+  async update(id: number, updateProjectClientDTO: UpdateProjectClientDTO) {
     const project = await this.findOne(id)
-    return await this.projectRepository.save({ ...project, ...updateProjectDto })
+    return await this.projectRepository.save({ ...project, ...updateProjectClientDTO })
   }
 
   async remove(id: number) {

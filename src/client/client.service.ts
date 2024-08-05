@@ -5,31 +5,52 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Client } from './entities/client.entity'
 import { IsNull, Repository } from 'typeorm'
 import { CompaniesService } from 'src/companies/companies.service'
+import { AllClientsDTO } from './dto/client.dto'
+import { ProjectDTO } from 'src/projects/dto/project.dto'
+import { getCurrency } from 'src/shared/helpers/getCurrency'
+import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
 
 @Injectable()
 export class ClientService {
 
   constructor(
-    @InjectRepository(Client) 
+    @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
     private readonly companyService: CompaniesService
-    ) { }
+  ) { }
 
   async create(createClientDto: CreateClientDto): Promise<Client> {
     const company = await this.companyService.findOne(createClientDto.companyId)
 
     const clientData = this.clientRepository.create(createClientDto)
 
-    clientData.name = createClientDto.name;
-    clientData.company = company;
+    clientData.name = createClientDto.name
+    clientData.company = company
 
 
-    return this.clientRepository.save(clientData);
+    return this.clientRepository.save(clientData)
 
   }
 
-  async findAll(): Promise<Client[]> {
-    return await this.clientRepository.find({ where: { deletedAt: IsNull() } })
+  async findAll(): Promise<AllClientsDTO[]> {
+    const clients = await this.clientRepository.find({ where: { deletedAt: IsNull() }, relations: ['projects'] })
+
+    return clients.map<AllClientsDTO>(client => ({
+      id: client.id,
+      name: client.name,
+      projects: client.projects.map<ProjectDTO>(project => ({
+        id: project.id,
+        name: project.name,
+        currency: getCurrency(project.currency),
+        amount: project.amount,
+        milestones: project.milestones.map<MilestoneDTO>(milestone => ({
+          id: milestone.id,
+          date: milestone.date,
+          name: milestone.name,
+          amountPercentage: milestone.amountPercentage
+        }))
+      }))
+    }))
   }
 
   async findOne(id: number): Promise<Client> {

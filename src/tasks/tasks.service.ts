@@ -6,7 +6,7 @@ import { Task } from './entities/task.entity'
 import { IsNull, Repository } from 'typeorm'
 import { UsersService } from 'src/users/users.service'
 import { TaskDTO } from './dto/task.dto'
-import { ProjectDTO } from 'src/projects/dto/project.dto'
+import { ProjectClientDTO } from 'src/projects/dto/project.dto'
 import { getCurrency } from 'src/shared/helpers/getCurrency'
 import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
 import { Milestone } from 'src/milestone/entities/milestone.entity'
@@ -50,7 +50,7 @@ export class TasksService {
     const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project', 'milestone'] })
 
     return tasks.map<TaskDTO>((task: Task) => {
-      const projectDTO: ProjectDTO = {
+      const ProjectClientDTO: ProjectClientDTO = {
         id: task.project.id,
         name: task.project.name,
         currency: getCurrency(task.project.currency),
@@ -60,7 +60,7 @@ export class TasksService {
 
       const id = task.id
       const dateTo = task.dateTo
-      const project = projectDTO
+      const project = ProjectClientDTO
       const description = task.description
       const hours = task.hours
       const status = task.status

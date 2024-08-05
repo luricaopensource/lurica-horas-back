@@ -36,6 +36,8 @@ export class UsersService {
     const users: User[] = await this.userRepository.find({ where: { deletedAt: IsNull() } })
 
     return users.map((user: User) => {
+      if (!user.usersToCompanies) user.usersToCompanies = []
+
       const userDTO: UserDTO = {
         id: user.id,
         firstName: user.firstName,
@@ -45,7 +47,13 @@ export class UsersService {
         roleName: getRole(user.role),
         currencyName: getCurrency(user.currency),
         hourlyAmount: user.hourlyAmount,
-        monthlyAmount: user.monthlyAmount
+        monthlyAmount: user.monthlyAmount,
+        companies: user.usersToCompanies.map((userToCompany) => {
+          return {
+            id: userToCompany.company.id,
+            name: userToCompany.company.name
+          }
+        })
       }
 
       return userDTO
@@ -84,6 +92,9 @@ export class UsersService {
     const userId = this.request['user'].sub
 
     const user = await this.findOne(userId)
+
+    if (!user.usersToCompanies) user.usersToCompanies = []
+
     return {
       id: user.id,
       firstName: user.firstName,
@@ -93,7 +104,13 @@ export class UsersService {
       roleName: getRole(user.role),
       currencyName: getCurrency(user.currency),
       hourlyAmount: user.hourlyAmount,
-      monthlyAmount: user.monthlyAmount
+      monthlyAmount: user.monthlyAmount,
+      companies: user.usersToCompanies.map((userToCompany) => {
+        return {
+          id: userToCompany.company.id,
+          name: userToCompany.company.name
+        }
+      })
     }
   }
 }
