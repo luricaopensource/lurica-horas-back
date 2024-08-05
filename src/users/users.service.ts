@@ -84,6 +84,9 @@ export class UsersService {
     const userId = this.request['user'].sub
 
     const user = await this.findOne(userId, ['usersToCompanies'])
+
+    Logger.log(user)
+
     return {
       id: user.id,
       firstName: user.firstName,
@@ -95,7 +98,6 @@ export class UsersService {
       hourlyAmount: user.hourlyAmount,
       monthlyAmount: user.monthlyAmount,
       companies: user.usersToCompanies.map((usersToCompanies) => {
-        Logger.log(usersToCompanies)
         return {
           id: usersToCompanies.company.id,
           name: usersToCompanies.company.name
