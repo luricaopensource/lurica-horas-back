@@ -10,7 +10,7 @@ export class UsersToCompanies {
     @ManyToOne(() => User, user => user.usersToCompanies)
     public user: User
 
-    @ManyToOne(() => Company, company => company.usersToCompanies)
+    @ManyToOne(() => Company, company => company.usersToCompanies, { eager: true })
     public company: Company
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

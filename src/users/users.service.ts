@@ -85,8 +85,6 @@ export class UsersService {
 
     const user = await this.findOne(userId, ['usersToCompanies'])
 
-    Logger.log(user)
-
     return {
       id: user.id,
       firstName: user.firstName,
