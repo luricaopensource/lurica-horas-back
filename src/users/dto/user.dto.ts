@@ -12,3 +12,10 @@ export interface UserDTO {
     monthlyAmount: number,
     companies?: UsersToCompaniesDTO[]
 }
+
+export interface UserTaskDTO {
+    id: number
+    fullName: string
+    hourlyAmount: number
+    currencyName: string
+}

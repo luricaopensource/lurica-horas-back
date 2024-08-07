@@ -12,6 +12,7 @@ import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
 import { Milestone } from 'src/milestone/entities/milestone.entity'
 import { MilestoneService } from 'src/milestone/milestone.service'
 import { ProjectsService } from 'src/projects/projects.service'
+import { UserTaskDTO } from 'src/users/dto/user.dto'
 
 @Injectable()
 export class TasksService {
@@ -27,6 +28,9 @@ export class TasksService {
     const tasks: Task[] = []
 
     for (const createTaskDto of createTasksDto) {
+      Logger.log(JSON.stringify(createTaskDto), 'TasksService.create')
+
+
       const user = await this.usersService.findOne(createTaskDto.userId)
       const project = await this.projectService.findOne(createTaskDto.projectId)
       const taskData = this.tasksRepository.create(createTaskDto)
@@ -65,9 +69,15 @@ export class TasksService {
       const hours = task.hours
       const status = task.status
       const paid = task.paid
-      const milestone = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
+      const milestone: MilestoneDTO = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
+      const employee: UserTaskDTO = {
+        id: task.user.id,
+        fullName: task.user.firstName + ' ' + task.user.lastName,
+        hourlyAmount: task.user.hourlyAmount,
+        currencyName: getCurrency(task.user.currency)
+      }
 
-      return { id, dateTo, project, description, hours, status, paid, milestone }
+      return { id, dateTo, project, description, hours, status, paid, milestone, employee }
     })
   }
 
@@ -81,6 +91,37 @@ export class TasksService {
 
   async findAllByEmployee(employeeId: number): Promise<Task[]> {
     return await this.tasksRepository.find({ where: { user: { id: employeeId } }, relations: ['user', 'project', 'milestone'] })
+  }
+
+  async findAllByEmployeeDTO(employeeId: number): Promise<TaskDTO[]> {
+    const tasks = await this.tasksRepository.find({ where: { user: { id: employeeId } }, relations: ['user', 'project', 'milestone'] })
+
+    return tasks.map<TaskDTO>((task: Task) => {
+      const ProjectClientDTO: ProjectClientDTO = {
+        id: task.project.id,
+        name: task.project.name,
+        currency: getCurrency(task.project.currency),
+        amount: task.project.amount,
+        client: { id: task.project.client.id, name: task.project.client.name },
+      }
+
+      const id = task.id
+      const dateTo = task.dateTo
+      const project = ProjectClientDTO
+      const description = task.description
+      const hours = task.hours
+      const status = task.status
+      const paid = task.paid
+      const milestone: MilestoneDTO = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
+      const employee: UserTaskDTO = {
+        id: task.user.id,
+        fullName: task.user.firstName + ' ' + task.user.lastName,
+        hourlyAmount: task.user.hourlyAmount,
+        currencyName: getCurrency(task.user.currency)
+      }
+
+      return { id, dateTo, project, description, hours, status, paid, milestone, employee }
+    })
   }
 
   async findOne(id: number): Promise<Task> {

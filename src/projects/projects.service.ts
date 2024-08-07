@@ -10,12 +10,19 @@ import { IResponse } from 'src/shared/interfaces/response'
 import { getCurrency } from 'src/shared/helpers/getCurrency'
 import { Milestone } from 'src/milestone/entities/milestone.entity'
 import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
+import { UsersToProjects } from 'src/users_to_projects/users_to_projects.entity'
+import { UsersService } from 'src/users/users.service'
 
 @Injectable()
 export class ProjectsService {
-  constructor(@InjectRepository(Project)
-  private readonly projectRepository: Repository<Project>,
-    private readonly clientService: ClientService) { }
+  constructor(
+    @InjectRepository(Project)
+    private readonly projectRepository: Repository<Project>,
+    @InjectRepository(UsersToProjects)
+    private readonly usersToProjectsRepository: Repository<UsersToProjects>,
+    private readonly clientService: ClientService,
+    private readonly userService: UsersService
+  ) { }
 
   async create(createProjectClientDTO: CreateProjectClientDTO): Promise<IResponse> {
     const client = await this.clientService.findOne(createProjectClientDTO.clientId)
@@ -30,7 +37,7 @@ export class ProjectsService {
     return { id: savedProject.id }
   }
 
-  async findAll() {
+  async findAll(): Promise<ProjectClientDTO[]> {
     const projects: Project[] = await this.projectRepository.find({ where: { deletedAt: IsNull() }, relations: ['client'] })
 
     return projects.map((project: Project) => {
@@ -45,6 +52,29 @@ export class ProjectsService {
 
       return ProjectClientDTO
     })
+  }
+
+  async findProjectsByEmployee(): Promise<ProjectClientDTO[]> {
+    const user = await this.userService.getUserFromBearerToken()
+
+    const usersToProjects: UsersToProjects[] = await this.usersToProjectsRepository.find({ where: { deletedAt: IsNull(), user: { id: user.id } }, relations: ['project'] })
+
+    const projects: ProjectClientDTO[] = []
+
+    for (let userToProject of usersToProjects) {
+      const ProjectClientDTO: ProjectClientDTO = {
+        id: userToProject.project.id,
+        name: userToProject.project.name,
+        client: { id: userToProject.project.client.id, name: userToProject.project.client.name },
+        currency: getCurrency(userToProject.project.currency),
+        amount: userToProject.project.amount,
+        milestones: userToProject.project.milestones.map<MilestoneDTO>((milestone: Milestone) => { return { id: milestone.id, name: milestone.name } })
+      }
+
+      projects.push(ProjectClientDTO)
+    }
+
+    return projects
   }
 
   async findOne(id: number) {
