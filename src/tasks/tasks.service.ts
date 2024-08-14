@@ -63,6 +63,7 @@ export class TasksService {
       }
 
       const id = task.id
+      const dateFrom = task.dateFrom
       const dateTo = task.dateTo
       const project = ProjectClientDTO
       const description = task.description
@@ -77,7 +78,7 @@ export class TasksService {
         currencyName: getCurrency(task.user.currency)
       }
 
-      return { id, dateTo, project, description, hours, status, paid, milestone, employee }
+      return { id, dateTo, dateFrom, project, description, hours, status, paid, milestone, employee }
     })
   }
 
