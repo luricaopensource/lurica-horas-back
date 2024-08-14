@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Req, Logger } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+  HttpStatus,
+  Req,
+  Logger,
+} from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -8,7 +20,7 @@ import { IResponse } from 'src/shared/interfaces/response'
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   findAll(): Promise<UserDTO[]> {
@@ -25,13 +37,21 @@ export class UsersController {
     return this.usersService.getUserFromBearerToken()
   }
 
+  @Get('/employees')
+  getEmployees(): Promise<UserDTO[]> {
+    return this.usersService.findAllEmployees()
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(+id)
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<IResponse> {
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<IResponse> {
     return this.usersService.update(+id, updateUserDto)
   }
 
