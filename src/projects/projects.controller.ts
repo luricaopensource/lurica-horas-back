@@ -17,9 +17,9 @@ export class ProjectsController {
     return this.projectsService.findAll()
   }
 
-  @Get('employee')
-  findProjectsByEmployee() {
-    return this.projectsService.findProjectsByEmployee()
+  @Get('employee/:id')
+  findProjectsByEmployee(@Param('id') id: string) {
+    return this.projectsService.findProjectsByEmployee(+id)
   }
 
 
