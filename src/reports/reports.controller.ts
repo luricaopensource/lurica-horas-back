@@ -2,7 +2,6 @@ import { Body, Controller, Get, Logger, Post, Res } from "@nestjs/common"
 import { ReportsService } from "./reports.service"
 import { Response } from "express"
 import { GetReportBody } from "./dto/get-report"
-import { Public } from "src/shared/decorators/public"
 
 @Controller('reports')
 export class ReportsController {

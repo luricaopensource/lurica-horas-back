@@ -1,7 +1,7 @@
 import { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
 import { headerSection } from "./sections/header.section"
 
-interface IReportHeaders {
+export interface IReportHeaders {
     date: string
     task: string
     hours: string
@@ -11,7 +11,7 @@ interface IReportHeaders {
     customer?: string
 }
 
-interface IReportContent {
+export interface IReportContent {
     date: string
     task: string
     hours: number
