@@ -12,7 +12,8 @@ import { ClientModule } from './client/client.module'
 import { MilestoneModule } from './milestone/milestone.module'
 import { ReportsModule } from './reports/reports.module'
 import { PrinterModule } from './printer/printer.module'
-import { CompaniesModule } from './companies/companies.module';
+import { CompaniesModule } from './companies/companies.module'
+import { DollarQuoteModule } from './dollar-quote/dollar-quote.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { CompaniesModule } from './companies/companies.module';
     MilestoneModule,
     ReportsModule,
     PrinterModule,
-    CompaniesModule
+    CompaniesModule,
+    DollarQuoteModule
   ],
   controllers: [AppController],
   providers: [AppService]

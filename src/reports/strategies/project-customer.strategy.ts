@@ -4,14 +4,16 @@ import { IReportContent, IReportHeaders } from "../tasks.report"
 import { DateFormatter } from "src/helpers"
 import { Project } from "src/projects/entities/project.entity"
 
-export class ProjectCustomerStrategy implements ContentStrategy {
-    constructor(private tasksService: TasksService, private project: Project) { }
+export class ProjectCustomerStrategy extends ContentStrategy {
+    constructor(private tasksService: TasksService, private project: Project) { super() }
 
     async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
         const content = []
         let headers = []
 
-        const tasks = await this.tasksService.findAllByProject(this.project.id)
+        const dateRange = this.getDateRange(dateFrom, dateTo)
+
+        const tasks = await this.tasksService.findAllByProject(this.project.id, dateRange)
         tasks.forEach((task) => {
             const milestoneName = task.milestone ? task.milestone.name : ''
             content.push([

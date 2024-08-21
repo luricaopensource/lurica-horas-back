@@ -1,5 +1,9 @@
-export const getCurrency = (currencyId: number) => {
-    const currencies = ['ARS', 'USD']
+const CURRENCIES = ['Pesos Argentinos', 'Dólar Oficial', 'Dólar Paralelo']
 
-    return currencies[currencyId - 1]
+export const getCurrency = (currencyId: number) => {
+    return CURRENCIES[currencyId - 1]
+}
+
+export const getCurrencyId = (currency: string) => {
+    return CURRENCIES.indexOf(currency) + 1
 }
