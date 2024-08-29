@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { PrinterService } from 'src/printer/printer.service'
 import { getSampleReport } from './sample-report.report'
 import { getHoursReport } from './tasks.report'
@@ -20,6 +20,7 @@ import { EmployeeCustomerStrategy } from './strategies/employee-customer.strateg
 import { ProjectStrategy } from './strategies/project.strategy'
 import { EmployeeStrategy } from './strategies/employee.strategy'
 import { DefaultGenerationStrategy } from './strategies/default.strategy'
+import { DateFormatter } from 'src/helpers'
 
 @Injectable()
 export class ReportsService {
@@ -47,66 +48,61 @@ export class ReportsService {
     let subtitle = ''
     let strategy: ContentStrategy = null
 
-    try {
-      let project: Project | null = null
-      let employee: User | null = null
-      let customer: Client | null = null
-      let milestone: Milestone | null = null
+    let project: Project | null = null
+    let employee: User | null = null
+    let customer: Client | null = null
+    let milestone: Milestone | null = null
 
-      if (projectId) {
-        project = await this.projectService.findOne(projectId)
-      }
-      if (employeeId) {
-        employee = await this.employeeService.findOne(employeeId, [
-          'tasks',
-          'tasks.project',
-        ])
-      }
-      if (customerId) {
-        customer = await this.clientService.findOneWithProjects(customerId)
-      }
-      if (milestoneId) {
-        milestone = await this.milestoneService.findOne(milestoneId)
-      }
+    if (projectId) {
+      project = await this.projectService.findOne(projectId)
+    }
+    if (employeeId) {
+      employee = await this.employeeService.findOne(employeeId, [
+        'tasks',
+        'tasks.project',
+      ])
+    }
+    if (customerId) {
+      customer = await this.clientService.findOneWithProjects(customerId)
+    }
+    if (milestoneId) {
+      milestone = await this.milestoneService.findOne(milestoneId)
+    }
 
-      if (project) {
-        subtitle += `Proyecto: ${project.name} \n`
-      }
-      if (employee) {
-        subtitle += `Empleado: ${employee.firstName} \n`
-      }
-      if (customer) {
-        subtitle += `Cliente: ${customer.name} \n`
-      }
+    if (project) {
+      subtitle += `Proyecto: ${project.name} \n`
+    }
+    if (employee) {
+      subtitle += `Empleado: ${employee.firstName} \n`
+    }
+    if (customer) {
+      subtitle += `Cliente: ${customer.name} \n`
+    }
 
-      // TODO: Create two columns to show the subtitles
+    // TODO: Create two columns to show the subtitles
 
-      if (milestone) {
-        subtitle += `Hito: ${milestone.name} \n`
-      }
-      if (dateFrom) {
-        subtitle += `Desde: ${dateFrom} \n`
-      }
-      if (dateTo) {
-        subtitle += `Hasta: ${dateTo} \n`
-      }
+    if (milestone) {
+      subtitle += `Hito: ${milestone.name} \n`
+    }
+    if (dateFrom) {
+      subtitle += `Desde: ${DateFormatter.getDDMMYYYY(new Date(dateFrom))} \n`
+    }
+    if (dateTo) {
+      subtitle += `Hasta: ${DateFormatter.getDDMMYYYY(new Date(dateTo))} \n`
+    }
 
-      if (project && employee) {
-        strategy = new ProjectEmployeeStrategy(this.tasksService, project, employee)
-      } else if (employee && customer) {
-        strategy = new EmployeeCustomerStrategy(this.tasksService, customer, employee)
-      } else if (project) {
-        strategy = new ProjectStrategy(project)
-      } else if (employee) {
-        strategy = new EmployeeStrategy(employee)
-      } else if (customer) {
-        strategy = new CustomerStrategy(this.tasksService, customer)
-      } else {
-        strategy = new DefaultGenerationStrategy()
-      }
-    } catch (error) {
-      Logger.log(error)
-      throw error
+    if (project && employee) {
+      strategy = new ProjectEmployeeStrategy(this.tasksService, project, employee)
+    } else if (employee && customer) {
+      strategy = new EmployeeCustomerStrategy(this.tasksService, customer, employee)
+    } else if (project) {
+      strategy = new ProjectStrategy(project)
+    } else if (employee) {
+      strategy = new EmployeeStrategy(employee)
+    } else if (customer) {
+      strategy = new CustomerStrategy(this.tasksService, customer)
+    } else {
+      strategy = new DefaultGenerationStrategy()
     }
 
     const generator = new ContentGenerator(strategy)

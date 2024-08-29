@@ -4,15 +4,18 @@ import { IReportContent, IReportHeaders } from "../tasks.report"
 import { DateFormatter } from "src/helpers"
 import { Project } from "src/projects/entities/project.entity"
 import { User } from "src/users/entities/user.entity"
+import { Logger } from "@nestjs/common"
 
-export class ProjectEmployeeStrategy implements ContentStrategy {
-    constructor(private tasksService: TasksService, private project: Project, private employee: User) { }
+export class ProjectEmployeeStrategy extends ContentStrategy {
+    constructor(private tasksService: TasksService, private project: Project, private employee: User) { super() }
 
-    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
+    async generateContentAndHeaders(dateFrom: string = "", dateTo: string = ""): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
         const content = []
         let headers = []
 
-        const tasks = await this.tasksService.findAllByEmployeeAndProject(this.project.id, this.employee.id)
+        const dateRange = this.getDateRange(dateFrom, dateTo)
+
+        const tasks = await this.tasksService.findAllByEmployeeAndProject(this.project.id, this.employee.id, dateRange)
         tasks.forEach((task) => {
             const milestoneName = task.milestone ? task.milestone.name : ''
             content.push([

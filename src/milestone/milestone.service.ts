@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { HttpException, Injectable, Logger } from '@nestjs/common'
 import { CreateMilestoneDto } from './dto/create-milestone.dto'
 import { UpdateMilestoneDto } from './dto/update-milestone.dto'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -20,10 +20,20 @@ export class MilestoneService {
 
   async create(createMilestoneDto: CreateMilestoneDto): Promise<IResponse> {
     const project = await this.projectService.findOne(createMilestoneDto.projectId)
+
+    const projectMilestones = await this.milestoneRepository.find({ where: { deletedAt: IsNull() }, relations: ['project', 'project.client'] })
+    let milestonePercentageSum = 0
+
+    projectMilestones.forEach( (milestone) => {
+      milestonePercentageSum += milestone.amountPercentage
+    })
+
+    milestonePercentageSum += createMilestoneDto.amountPercentage
+
+    if (milestonePercentageSum > 100) throw new HttpException(`La suma del porcentaje de hitos para el proyecto ${project.name} supera el 100%`, 400)
+
     const milestoneData = this.milestoneRepository.create(createMilestoneDto)
-
     milestoneData.project = project
-
     const savedMilestone = await this.milestoneRepository.save(milestoneData)
 
     return { id: savedMilestone.id }

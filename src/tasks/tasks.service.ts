@@ -3,16 +3,16 @@ import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Task } from './entities/task.entity'
-import { IsNull, Repository } from 'typeorm'
+import { Between, IsNull, Repository } from 'typeorm'
 import { UsersService } from 'src/users/users.service'
 import { TaskDTO } from './dto/task.dto'
 import { ProjectClientDTO } from 'src/projects/dto/project.dto'
-import { getCurrency } from 'src/shared/helpers/getCurrency'
+import { getCurrency, getCurrencyId } from 'src/shared/helpers/getCurrency'
 import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
-import { Milestone } from 'src/milestone/entities/milestone.entity'
 import { MilestoneService } from 'src/milestone/milestone.service'
 import { ProjectsService } from 'src/projects/projects.service'
 import { UserTaskDTO } from 'src/users/dto/user.dto'
+import { DollarQuoteService } from 'src/dollar-quote/dollar-quote.service'
 
 @Injectable()
 export class TasksService {
@@ -21,16 +21,14 @@ export class TasksService {
     private readonly tasksRepository: Repository<Task>,
     private readonly usersService: UsersService,
     private readonly milestoneService: MilestoneService,
-    private readonly projectService: ProjectsService
+    private readonly projectService: ProjectsService,
+    private readonly dollarQuoteService: DollarQuoteService
   ) { }
 
   async create(createTasksDto: CreateTaskDto[]): Promise<Task[]> {
     const tasks: Task[] = []
 
     for (const createTaskDto of createTasksDto) {
-      Logger.log(JSON.stringify(createTaskDto), 'TasksService.create')
-
-
       const user = await this.usersService.findOne(createTaskDto.userId)
       const project = await this.projectService.findOne(createTaskDto.projectId)
       const taskData = this.tasksRepository.create(createTaskDto)
@@ -53,7 +51,9 @@ export class TasksService {
   async findAll(): Promise<TaskDTO[]> {
     const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project', 'milestone'] })
 
-    return tasks.map<TaskDTO>((task: Task) => {
+    const tasksDto = []
+
+    for (let task of tasks) {
       const ProjectClientDTO: ProjectClientDTO = {
         id: task.project.id,
         name: task.project.name,
@@ -62,32 +62,54 @@ export class TasksService {
         client: { id: task.project.client.id, name: task.project.client.name },
       }
 
+      const dollarQuotes = await this.dollarQuoteService.findQuote()
+
+      const dollarQuote = task.user.currency == 2 ? dollarQuotes.official : dollarQuotes.blue
+
+      const usdAmount = +((task.user.hourlyAmount / dollarQuote).toFixed(2))
+
+
       const id = task.id
       const dateFrom = task.dateFrom
       const dateTo = task.dateTo
       const project = ProjectClientDTO
       const description = task.description
       const hours = task.hours
-      const status = task.status
       const paid = task.paid
+      const status = task.status
       const milestone: MilestoneDTO = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
       const employee: UserTaskDTO = {
         id: task.user.id,
         fullName: task.user.firstName + ' ' + task.user.lastName,
         hourlyAmount: task.user.hourlyAmount,
+        usdAmount,
         currencyName: getCurrency(task.user.currency)
       }
 
-      return { id, dateTo, dateFrom, project, description, hours, status, paid, milestone, employee }
-    })
+      tasksDto.push({ id, dateTo, dateFrom, project, description, hours, status, paid, milestone, employee })
+    }
+
+    return tasksDto
   }
 
-  async findAllByEmployeeAndProject(employeeId: number, projectId: number): Promise<Task[]> {
-    return await this.tasksRepository.find({ where: { user: { id: employeeId }, project: { id: projectId } }, relations: ['milestone'] })
+  async findAllByEmployeeAndProject(employeeId: number, projectId: number, dateRange: Date[] = []): Promise<Task[]> {
+    const where = { user: { id: employeeId }, project: { id: projectId } }
+
+    if (dateRange.length) {
+      where['createdAt'] = Between(dateRange[0], dateRange[1])
+    }
+
+    return await this.tasksRepository.find({ where, relations: ['milestone'] })
   }
 
-  async findAllByProject(projectId: number): Promise<Task[]> {
-    return await this.tasksRepository.find({ where: { project: { id: projectId } } })
+  async findAllByProject(projectId: number, dateRange: Date[] = []): Promise<Task[]> {
+    const where = { project: { id: projectId } }
+
+    if (dateRange.length) {
+      where['createdAt'] = Between(dateRange[0], dateRange[1])
+    }
+
+    return await this.tasksRepository.find({ where })
   }
 
   async findAllByEmployee(employeeId: number): Promise<Task[]> {
@@ -118,6 +140,7 @@ export class TasksService {
         id: task.user.id,
         fullName: task.user.firstName + ' ' + task.user.lastName,
         hourlyAmount: task.user.hourlyAmount,
+        usdAmount: 0,
         currencyName: getCurrency(task.user.currency)
       }
 

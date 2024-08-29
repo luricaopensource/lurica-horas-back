@@ -5,17 +5,20 @@ import { Client } from "src/client/entities/client.entity"
 import { IReportContent, IReportHeaders } from "../tasks.report"
 import { User } from "src/users/entities/user.entity"
 
-export class EmployeeCustomerStrategy implements ContentStrategy {
-    constructor(private tasksService: TasksService, private customer: Client, private employee: User) { }
+export class EmployeeCustomerStrategy extends ContentStrategy {
+    constructor(private tasksService: TasksService, private customer: Client, private employee: User) { super() }
 
     async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
         const content = []
         let headers = []
 
+        const dateRange = this.getDateRange(dateFrom, dateTo)
+
         for (let project of this.customer.projects) {
             const tasks = await this.tasksService.findAllByEmployeeAndProject(
                 this.employee.id,
                 project.id,
+                dateRange
             )
             tasks.forEach((task) => {
                 const milestoneName = task.milestone ? task.milestone.name : ''

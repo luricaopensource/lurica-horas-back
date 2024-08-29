@@ -23,7 +23,7 @@ export class ReportsController {
             const pdfDocument = await this.reportsService.createHoursReport(body)
 
             response.setHeader('Content-type', 'application/pdf')
-            pdfDocument.info.Title = 'Hours report'
+            pdfDocument.info.Title = 'Reporte de horas'
             pdfDocument.pipe(response)
             pdfDocument.end()
         } catch (error) {
