@@ -7,7 +7,7 @@ import { Between, IsNull, Repository } from 'typeorm'
 import { UsersService } from 'src/users/users.service'
 import { TaskDTO } from './dto/task.dto'
 import { ProjectClientDTO } from 'src/projects/dto/project.dto'
-import { getCurrency, getCurrencyId } from 'src/shared/helpers/getCurrency'
+import { getCurrency } from 'src/shared/helpers/getCurrency'
 import { MilestoneDTO } from 'src/milestone/dto/milestone.dto'
 import { MilestoneService } from 'src/milestone/milestone.service'
 import { ProjectsService } from 'src/projects/projects.service'
@@ -68,15 +68,13 @@ export class TasksService {
 
       const usdAmount = +((task.user.hourlyAmount / dollarQuote).toFixed(2))
 
-
       const id = task.id
-      const dateFrom = task.dateFrom
-      const dateTo = task.dateTo
       const project = ProjectClientDTO
       const description = task.description
       const hours = task.hours
       const paid = task.paid
       const status = task.status
+      const createdAt = task.createdAt
       const milestone: MilestoneDTO = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
       const employee: UserTaskDTO = {
         id: task.user.id,
@@ -86,7 +84,7 @@ export class TasksService {
         currencyName: getCurrency(task.user.currency)
       }
 
-      tasksDto.push({ id, dateTo, dateFrom, project, description, hours, status, paid, milestone, employee })
+      tasksDto.push({ id, createdAt, project, description, hours, status, paid, milestone, employee })
     }
 
     return tasksDto
@@ -129,12 +127,12 @@ export class TasksService {
       }
 
       const id = task.id
-      const dateTo = task.dateTo
       const project = ProjectClientDTO
       const description = task.description
       const hours = task.hours
       const status = task.status
       const paid = task.paid
+      const createdAt = task.createdAt
       const milestone: MilestoneDTO = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
       const employee: UserTaskDTO = {
         id: task.user.id,
@@ -144,7 +142,7 @@ export class TasksService {
         currencyName: getCurrency(task.user.currency)
       }
 
-      return { id, dateTo, project, description, hours, status, paid, milestone, employee }
+      return { id, createdAt, project, description, hours, status, paid, milestone, employee }
     })
   }
 

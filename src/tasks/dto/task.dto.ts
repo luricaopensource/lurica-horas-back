@@ -4,7 +4,7 @@ import { UserTaskDTO } from "src/users/dto/user.dto"
 
 export interface TaskDTO {
     id: number
-    dateTo: Date
+    createdAt: Date
     project: ProjectClientDTO
     description: string
     hours: number

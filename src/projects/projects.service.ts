@@ -55,7 +55,7 @@ export class ProjectsService {
   }
 
   async findProjectsByEmployee(id: number): Promise<ProjectClientDTO[]> {
-    const user = await this.userService.findOne(id);
+    const user = await this.userService.findOne(id)
 
     const usersToProjects: UsersToProjects[] = await this.usersToProjectsRepository.find({ where: { deletedAt: IsNull(), user: { id: user.id } }, relations: ['project'] })
 

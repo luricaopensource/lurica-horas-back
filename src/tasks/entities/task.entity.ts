@@ -9,12 +9,6 @@ export class Task {
     public id: number
 
     @Column()
-    public dateFrom: Date
-
-    @Column()
-    public dateTo: Date
-
-    @Column()
     public hours: number
 
     @Column({ type: "text" })
