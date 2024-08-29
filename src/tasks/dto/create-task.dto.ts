@@ -3,8 +3,7 @@ import { Project } from "src/projects/entities/project.entity"
 import { User } from "src/users/entities/user.entity"
 
 export class CreateTaskDto {
-    readonly dateFrom: Date
-    readonly dateTo: Date
+    readonly createdAt: Date
     readonly hours: number
     readonly description: string
     readonly type: string

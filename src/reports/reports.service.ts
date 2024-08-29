@@ -107,7 +107,7 @@ export class ReportsService {
     } else if (customer) {
       strategy = new CustomerStrategy(this.tasksService, customer)
     } else {
-      strategy = new DefaultGenerationStrategy()
+      strategy = new DefaultGenerationStrategy(this.tasksService)
     }
 
     const generator = new ContentGenerator(strategy)

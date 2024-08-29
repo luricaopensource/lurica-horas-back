@@ -35,7 +35,6 @@ export class CustomerStrategy extends ContentStrategy {
             content.push(['', '', '', '', '', ''])
         }
 
-
         return { content, headers }
     }
 }

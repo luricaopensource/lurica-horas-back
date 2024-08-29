@@ -29,7 +29,6 @@ export class ClientService {
 
 
     return this.clientRepository.save(clientData)
-
   }
 
   async findAll(): Promise<AllClientsDTO[]> {
