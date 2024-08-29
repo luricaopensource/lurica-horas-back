@@ -16,7 +16,6 @@ import { CustomerStrategy } from './strategies/customer.strategy'
 import { ContentStrategy } from './strategies/content-strategy.interface'
 import { ContentGenerator } from './strategies/content-generator.strategy'
 import { ProjectEmployeeStrategy } from './strategies/project-employee.strategy'
-import { ProjectCustomerStrategy } from './strategies/project-customer.strategy'
 import { EmployeeCustomerStrategy } from './strategies/employee-customer.strategy'
 import { ProjectStrategy } from './strategies/project.strategy'
 import { EmployeeStrategy } from './strategies/employee.strategy'
@@ -92,12 +91,8 @@ export class ReportsService {
         subtitle += `Hasta: ${dateTo} \n`
       }
 
-      if (project && employee && customer) {
+      if (project && employee) {
         strategy = new ProjectEmployeeStrategy(this.tasksService, project, employee)
-      } else if (project && employee) {
-        strategy = new ProjectEmployeeStrategy(this.tasksService, project, employee)
-      } else if (project && customer) {
-        strategy = new ProjectCustomerStrategy(this.tasksService, project)
       } else if (employee && customer) {
         strategy = new EmployeeCustomerStrategy(this.tasksService, customer, employee)
       } else if (project) {
