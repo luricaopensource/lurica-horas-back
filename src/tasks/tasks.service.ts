@@ -48,9 +48,7 @@ export class TasksService {
     return tasks
   }
 
-  async findAll(): Promise<TaskDTO[]> {
-    const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project', 'milestone'] })
-
+  async iterateTasks(tasks: Task[]): Promise<TaskDTO[]> {
     const tasksDto = []
 
     for (let task of tasks) {
@@ -64,9 +62,8 @@ export class TasksService {
 
       const dollarQuotes = await this.dollarQuoteService.findQuote()
 
-      const dollarQuote = task.user.currency == 2 ? dollarQuotes.official : dollarQuotes.blue
-
-      const usdAmount = +((task.user.hourlyAmount / dollarQuote).toFixed(2))
+      const blueQuoteAmount = +((task.user.hourlyAmount * dollarQuotes.blue).toFixed(2))
+      const officialQuoteAmount = +((task.user.hourlyAmount * dollarQuotes.official).toFixed(2))
 
       const id = task.id
       const project = ProjectClientDTO
@@ -80,7 +77,8 @@ export class TasksService {
         id: task.user.id,
         fullName: task.user.firstName + ' ' + task.user.lastName,
         hourlyAmount: task.user.hourlyAmount,
-        usdAmount,
+        blueQuoteAmount,
+        officialQuoteAmount,
         currencyName: getCurrency(task.user.currency)
       }
 
@@ -88,6 +86,12 @@ export class TasksService {
     }
 
     return tasksDto
+  }
+
+  async findAll(): Promise<TaskDTO[]> {
+    const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project', 'milestone'] })
+
+    return this.iterateTasks(tasks)
   }
 
   async findAllByEmployeeAndProject(employeeId: number, projectId: number, dateRange: Date[] = []): Promise<Task[]> {
@@ -117,33 +121,7 @@ export class TasksService {
   async findAllByEmployeeDTO(employeeId: number): Promise<TaskDTO[]> {
     const tasks = await this.tasksRepository.find({ where: { user: { id: employeeId } }, relations: ['user', 'project', 'milestone'] })
 
-    return tasks.map<TaskDTO>((task: Task) => {
-      const ProjectClientDTO: ProjectClientDTO = {
-        id: task.project.id,
-        name: task.project.name,
-        currency: getCurrency(task.project.currency),
-        amount: task.project.amount,
-        client: { id: task.project.client.id, name: task.project.client.name },
-      }
-
-      const id = task.id
-      const project = ProjectClientDTO
-      const description = task.description
-      const hours = task.hours
-      const status = task.status
-      const paid = task.paid
-      const createdAt = task.createdAt
-      const milestone: MilestoneDTO = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
-      const employee: UserTaskDTO = {
-        id: task.user.id,
-        fullName: task.user.firstName + ' ' + task.user.lastName,
-        hourlyAmount: task.user.hourlyAmount,
-        usdAmount: 0,
-        currencyName: getCurrency(task.user.currency)
-      }
-
-      return { id, createdAt, project, description, hours, status, paid, milestone, employee }
-    })
+    return this.iterateTasks(tasks)
   }
 
   async findOne(id: number): Promise<Task> {

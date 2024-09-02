@@ -35,6 +35,9 @@ export class User {
     @Column({ nullable: true, type: 'decimal', precision: 15, scale: 2 })
     public monthlyAmount: number
 
+    @Column({nullable: false, default: 1})
+    public amountType: number
+
     @OneToMany(() => Task, task => task.user, { lazy: true })
     public tasks: Promise<Task[]>
 
@@ -56,4 +59,3 @@ export class User {
     @Column({ nullable: true, type: 'timestamp', default: null })
     public deletedAt: Date
 }
-

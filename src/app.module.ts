@@ -14,6 +14,7 @@ import { ReportsModule } from './reports/reports.module'
 import { PrinterModule } from './printer/printer.module'
 import { CompaniesModule } from './companies/companies.module'
 import { DollarQuoteModule } from './dollar-quote/dollar-quote.module';
+import { UsersAmountsModule } from './users_amounts/users_amounts.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { DollarQuoteModule } from './dollar-quote/dollar-quote.module';
     ReportsModule,
     PrinterModule,
     CompaniesModule,
-    DollarQuoteModule
+    DollarQuoteModule,
+    UsersAmountsModule
   ],
   controllers: [AppController],
   providers: [AppService]
