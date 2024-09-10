@@ -37,7 +37,7 @@ export class ClientService {
     return clients.map<AllClientsDTO>(client => ({
       id: client.id,
       name: client.name,
-      projects: client.projects.map<ProjectDTO>(project => ({
+      projects: client.projects.filter(project => !project.deletedAt).map<ProjectDTO>(project => ({
         id: project.id,
         name: project.name,
         currency: getCurrency(project.currency),

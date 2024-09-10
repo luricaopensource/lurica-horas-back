@@ -1,4 +1,3 @@
-import { TasksService } from "src/tasks/tasks.service"
 import { IReportContent, IReportHeaders } from "../tasks.report"
 import { ContentStrategy } from "./content-strategy.interface"
 import { Project } from "src/projects/entities/project.entity"
@@ -14,8 +13,10 @@ export class ProjectStrategy extends ContentStrategy {
         const content = []
         let headers = []
 
+        const dateRange = this.getDateRange(dateFrom, dateTo)
+
         this.project.tasks.forEach((task: Task) => {
-            if (task.createdAt < new Date(dateFrom) || task.createdAt > new Date(dateTo)) return
+            if (task.createdAt < dateRange.from || task.createdAt > dateRange.to) return
 
             const milestoneName = task.milestone ? task.milestone.name : ''
             content.push([

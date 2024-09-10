@@ -4,7 +4,6 @@ import { IReportContent, IReportHeaders } from "../tasks.report"
 import { DateFormatter } from "src/helpers"
 import { Project } from "src/projects/entities/project.entity"
 import { User } from "src/users/entities/user.entity"
-import { Logger } from "@nestjs/common"
 
 export class ProjectEmployeeStrategy extends ContentStrategy {
     constructor(private tasksService: TasksService, private project: Project, private employee: User) { super() }

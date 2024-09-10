@@ -62,8 +62,8 @@ export class TasksService {
 
       const dollarQuotes = await this.dollarQuoteService.findQuote()
 
-      const blueQuoteAmount = +((task.user.hourlyAmount * dollarQuotes.blue).toFixed(2))
-      const officialQuoteAmount = +((task.user.hourlyAmount * dollarQuotes.official).toFixed(2))
+      const blueQuoteAmount = +((task.user.amount * dollarQuotes.blue).toFixed(2))
+      const officialQuoteAmount = +((task.user.amount * dollarQuotes.official).toFixed(2))
 
       const id = task.id
       const project = ProjectClientDTO
@@ -76,7 +76,7 @@ export class TasksService {
       const employee: UserTaskDTO = {
         id: task.user.id,
         fullName: task.user.firstName + ' ' + task.user.lastName,
-        hourlyAmount: task.user.hourlyAmount,
+        hourlyAmount: task.user.amount,
         blueQuoteAmount,
         officialQuoteAmount,
         currencyName: getCurrency(task.user.currency)
@@ -94,21 +94,21 @@ export class TasksService {
     return this.iterateTasks(tasks)
   }
 
-  async findAllByEmployeeAndProject(employeeId: number, projectId: number, dateRange: Date[] = []): Promise<Task[]> {
+  async findAllByEmployeeAndProject(employeeId: number, projectId: number, dateRange: { from: Date, to: Date } = { from: null, to: null }): Promise<Task[]> {
     const where = { user: { id: employeeId }, project: { id: projectId } }
 
-    if (dateRange.length) {
-      where['createdAt'] = Between(dateRange[0], dateRange[1])
+    if (dateRange.from && dateRange.to) {
+      where['createdAt'] = Between(dateRange.from, dateRange.to)
     }
 
     return await this.tasksRepository.find({ where, relations: ['milestone'] })
   }
 
-  async findAllByProject(projectId: number, dateRange: Date[] = []): Promise<Task[]> {
+  async findAllByProject(projectId: number, dateRange: { from: Date, to: Date } = { from: null, to: null }): Promise<Task[]> {
     const where = { project: { id: projectId } }
 
-    if (dateRange.length) {
-      where['createdAt'] = Between(dateRange[0], dateRange[1])
+    if (dateRange.from && dateRange.to) {
+      where['createdAt'] = Between(dateRange.from, dateRange.to)
     }
 
     return await this.tasksRepository.find({ where })

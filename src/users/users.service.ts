@@ -15,6 +15,10 @@ import { REQUEST } from '@nestjs/core'
 import { getCurrency } from 'src/shared/helpers/getCurrency'
 import { getRole } from 'src/shared/helpers/getRole'
 import { IResponse } from 'src/shared/interfaces/response'
+import { UsersToProjects } from 'src/users_to_projects/users_to_projects.entity'
+import { getAmountType } from 'src/shared/helpers/getAmountType'
+import { DateFormatter } from 'src/helpers'
+import { Project } from 'src/projects/entities/project.entity'
 
 export interface UserResponse {
   id: number
@@ -25,9 +29,13 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UsersToProjects)
+    private readonly usersToProjectsRepository: Repository<UsersToProjects>,
+    @InjectRepository(Project)
+    private readonly projectsRepository: Repository<Project>,
     @Inject(REQUEST)
     private readonly request: Request,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<IResponse> {
     const userData = this.userRepository.create(createUserDto)
@@ -42,8 +50,11 @@ export class UsersService {
       where: { deletedAt: IsNull() },
     })
 
-    return users.map((user: User) => {
-      if (!user.usersToCompanies) user.usersToCompanies = []
+    const usersDto = []
+
+    for (let user of users) {
+      const usersToCompanies = await user.usersToCompanies
+      const usersToProjects = await user.usersToProjects
 
       const userDTO: UserDTO = {
         id: user.id,
@@ -53,18 +64,27 @@ export class UsersService {
         email: user.email,
         roleName: getRole(user.role),
         currencyName: getCurrency(user.currency),
-        hourlyAmount: user.hourlyAmount,
-        monthlyAmount: user.monthlyAmount,
-        companies: user.usersToCompanies.map((userToCompany) => {
+        amount: user.amount,
+        amountType: user.amountType,
+        amountTypeName: getAmountType(user.amountType),
+        companies: usersToCompanies.map((userToCompany) => {
           return {
             id: userToCompany.company.id,
             name: userToCompany.company.name,
           }
         }),
+        projects: usersToProjects.map((userToProject) => {
+          return {
+            id: userToProject.project.id,
+            name: userToProject.project.name,
+          }
+        })
       }
 
-      return userDTO
-    })
+      usersDto.push(userDTO)
+    }
+
+    return usersDto
   }
 
   async findAllEmployees(): Promise<UserDTO[]> {
@@ -72,8 +92,11 @@ export class UsersService {
       where: { role: 3, deletedAt: IsNull() },
     })
 
-    return users.map((user: User) => {
-      if (!user.usersToCompanies) user.usersToCompanies = []
+    const usersDto = []
+
+    for (let user of users) {
+      const usersToCompanies = await user.usersToCompanies
+      const usersToProjects = await user.usersToProjects
 
       const userDTO: UserDTO = {
         id: user.id,
@@ -83,18 +106,27 @@ export class UsersService {
         email: user.email,
         roleName: getRole(user.role),
         currencyName: getCurrency(user.currency),
-        hourlyAmount: user.hourlyAmount,
-        monthlyAmount: user.monthlyAmount,
-        companies: user.usersToCompanies.map((userToCompany) => {
+        amount: user.amount,
+        amountType: user.amountType,
+        amountTypeName: getAmountType(user.amountType),
+        companies: usersToCompanies.map((userToCompany) => {
           return {
             id: userToCompany.company.id,
             name: userToCompany.company.name,
           }
         }),
+        projects: usersToProjects.map((userToProject) => {
+          return {
+            id: userToProject.project.id,
+            name: userToProject.project.name,
+          }
+        })
       }
 
-      return userDTO
-    })
+      usersDto.push(userDTO)
+    }
+
+    return usersDto
   }
 
   async findOne(id: number, relations: string[] = []): Promise<User> {
@@ -117,12 +149,35 @@ export class UsersService {
     return user
   }
 
+  async saveLastLogin(id: number): Promise<void> {
+    await this.userRepository.update(id, {
+      lastLogin: new Date()
+    })
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto): Promise<IResponse> {
     const user = await this.findOne(id)
     const savedUser = await this.userRepository.save({
       ...user,
       ...updateUserDto,
     })
+
+    for (let userToProject of updateUserDto.userToProjects) {
+      if ((await this.usersToProjectsRepository.find({
+        where: {
+          user: { id },
+          project: { id: userToProject.project }
+        }
+      })).length > 0) continue
+
+      const userProjectToSave = new UsersToProjects()
+      userProjectToSave.user = savedUser
+      userProjectToSave.project = await this.projectsRepository.findOneBy({ id: userToProject.project })
+
+      const newUserToProject = this.usersToProjectsRepository.create(userProjectToSave)
+
+      this.usersToProjectsRepository.save(newUserToProject)
+    }
 
     return { id: savedUser.id }
   }
@@ -142,6 +197,9 @@ export class UsersService {
 
     const user = await this.findOne(userId, ['usersToCompanies'])
 
+    const userToCompanies = await user.usersToCompanies
+    const userToProjects = await user.usersToProjects
+
     return {
       id: user.id,
       firstName: user.firstName,
@@ -150,14 +208,22 @@ export class UsersService {
       email: user.email,
       roleName: getRole(user.role),
       currencyName: getCurrency(user.currency),
-      hourlyAmount: user.hourlyAmount,
-      monthlyAmount: user.monthlyAmount,
-      companies: user.usersToCompanies.map((usersToCompanies) => {
+      amount: user.amount,
+      amountType: user.amountType,
+      amountTypeName: getAmountType(user.amountType),
+      lastLogin: DateFormatter.getDDMMYYYYHHMM(user.lastLogin),
+      companies: userToCompanies.map((usersToCompanies) => {
         return {
           id: usersToCompanies.company.id,
           name: usersToCompanies.company.name,
         }
       }),
+      projects: userToProjects.map((usersToProjects) => {
+        return {
+          id: usersToProjects.project.id,
+          name: usersToProjects.project.name,
+        }
+      })
     }
   }
 }

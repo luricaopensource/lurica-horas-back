@@ -15,10 +15,10 @@ interface HeaderSection {
 }
 
 const currentDate: Content = {
-    text: DateFormatter.getDDMMYYYY(new Date()),
+    text: `Fecha de reporte: ${DateFormatter.getDDMMYYYY(new Date())}`,
     alignment: 'right',
-    width: 150,
-    margin: [40, 20]
+    width: 170,
+    margin: [20, 20]
 }
 
 const logo: ContentImage = {
@@ -35,7 +35,7 @@ export const headerSection = (options: HeaderSection): Content => {
     const headerSubtitle: Content = subtitle ? {
         text: subtitle,
         alignment: 'center',
-        margin: [0, 2, 0, 0],
+        margin: [100, 2, 0, 0],
         style: {
             fontSize: 16,
             bold: true
@@ -44,7 +44,7 @@ export const headerSection = (options: HeaderSection): Content => {
 
     const headerTitle: Content =
         title ? {
-            stack: [{ text: title, alignment: 'center', style: { bold: true, fontSize: 22 }, margin: [0, 15] }, headerSubtitle]
+            stack: [{ text: title, alignment: 'center', style: { bold: true, fontSize: 22 }, margin: [100, 15, 0, 0] }, headerSubtitle]
         }
             : null
     const headerDate: Content = showDate ? currentDate : null

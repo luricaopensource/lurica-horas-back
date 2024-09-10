@@ -10,10 +10,10 @@ export class UsersToProjects {
     @ManyToOne(() => User, user => user.usersToProjects)
     public user: User
 
-    @ManyToOne(() => Project, project => project.usersToProjects)
+    @ManyToOne(() => Project, project => project.usersToProjects, { eager: true })
     public project: Project
 
-    @Column({ type: 'decimal', precision: 15, scale: 2 })
+    @Column({ type: 'decimal', precision: 15, scale: 2, default: 1 })
     public userHourlyAmount: number
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

@@ -1,20 +1,23 @@
 import { DateFormatter } from "src/helpers"
 import { ContentStrategy } from "./content-strategy.interface"
 import { TasksService } from "src/tasks/tasks.service"
+import { IReportContent, IReportHeaders } from "../tasks.report"
+import { Logger } from "@nestjs/common"
 
 export class DefaultGenerationStrategy extends ContentStrategy {
     constructor(private tasksService: TasksService) { super() }
 
-    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: any[]; headers: any[] }> {
+    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
         const content = []
         let headers = []
 
         const dateRange = this.getDateRange(dateFrom, dateTo)
 
-        // Get all tasks
         const tasks = await this.tasksService.findAll()
 
         for (let task of tasks) {
+            if (task.createdAt < dateRange.from || task.createdAt > dateRange.to) continue
+
             const milestoneName = task.milestone ? task.milestone.name : ''
             content.push([
                 DateFormatter.getDDMMYYYY(task.createdAt),
@@ -32,7 +35,6 @@ export class DefaultGenerationStrategy extends ContentStrategy {
             content.push(['', '', '', '', '', '', ''])
         }
 
-
-        return { content: [], headers: [] }
+        return { content, headers }
     }
 }

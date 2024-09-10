@@ -1,4 +1,5 @@
 import { UsersToCompaniesDTO } from "src/users_to_companies/users_to_companies.dto"
+import { UsersToProjectsDTO } from "src/users_to_projects/dto/user_to_project.dto"
 
 export interface UserDTO {
     id: number
@@ -8,9 +9,12 @@ export interface UserDTO {
     email: string
     roleName: string
     currencyName: string
-    hourlyAmount: number
-    monthlyAmount: number,
+    amount: number
+    amountType: number
+    amountTypeName: string
     companies?: UsersToCompaniesDTO[]
+    projects?: UsersToProjectsDTO[]
+    lastLogin?: string
 }
 
 export interface UserTaskDTO {

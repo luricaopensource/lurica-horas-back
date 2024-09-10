@@ -1,16 +1,19 @@
 import { IReportContent, IReportHeaders } from "../tasks.report"
 
 export abstract class ContentStrategy {
-    getDateRange(dateFrom: string, dateTo: string): Date[] {
-        const dateRange = []
+    getDateRange(dateFrom: string, dateTo: string): { from: Date, to: Date } {
+        const dateRange = {
+            from: new Date(),
+            to: new Date()
+        }
 
         if (!dateFrom && !dateTo) {
-            const fromDate = new Date()
             const toDate = new Date()
-            toDate.setDate(toDate.getDate() - 30)
+            const fromDate = new Date()
+            fromDate.setDate(toDate.getDate() - 30)
 
-            dateRange.push(fromDate)
-            dateRange.push(toDate)
+            dateRange.from = fromDate
+            dateRange.to = toDate
             return dateRange
         }
 
@@ -20,8 +23,8 @@ export abstract class ContentStrategy {
         if (dateFrom && dateTo) {
             to.setDate(to.getDate() + 1)
 
-            dateRange.push(from)
-            dateRange.push(to)
+            dateRange.from = from
+            dateRange.to = to
 
             return dateRange
         }
@@ -30,16 +33,17 @@ export abstract class ContentStrategy {
             const thirtyMoreDays = new Date(dateFrom)
 
             thirtyMoreDays.setDate(thirtyMoreDays.getDate() + 30)
-            dateRange.push(from)
-            dateRange.push(thirtyMoreDays)
+            dateRange.from = from
+            dateRange.to = thirtyMoreDays
             return dateRange
         }
 
         const thirtyLessDays = new Date(dateTo)
         thirtyLessDays.setDate(thirtyLessDays.getDate() - 30)
+        to.setDate(to.getDate() + 1)
 
-        dateRange.push(thirtyLessDays)
-        dateRange.push(to)
+        dateRange.from = thirtyLessDays
+        dateRange.to = to
 
         return dateRange
     }

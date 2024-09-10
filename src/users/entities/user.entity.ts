@@ -30,22 +30,19 @@ export class User {
     public currency: number
 
     @Column({ nullable: true, type: 'decimal', precision: 15, scale: 2 })
-    public hourlyAmount: number
+    public amount: number
 
-    @Column({ nullable: true, type: 'decimal', precision: 15, scale: 2 })
-    public monthlyAmount: number
-
-    @Column({nullable: false, default: 1})
+    @Column({ nullable: false, default: 1 })
     public amountType: number
 
     @OneToMany(() => Task, task => task.user, { lazy: true })
     public tasks: Promise<Task[]>
 
-    @OneToMany(() => UsersToProjects, usersToProjects => usersToProjects.user)
-    public usersToProjects: UsersToProjects[]
+    @OneToMany(() => UsersToProjects, usersToProjects => usersToProjects.user, { lazy: true })
+    public usersToProjects: Promise<UsersToProjects[]>
 
-    @OneToMany(() => UsersToCompanies, usersToCompanies => usersToCompanies.user)
-    public usersToCompanies: UsersToCompanies[]
+    @OneToMany(() => UsersToCompanies, usersToCompanies => usersToCompanies.user, { lazy: true })
+    public usersToCompanies: Promise<UsersToCompanies[]>
 
     @Column({ nullable: true, type: 'timestamp', default: null })
     public lastLogin: Date

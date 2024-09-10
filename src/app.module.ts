@@ -13,8 +13,8 @@ import { MilestoneModule } from './milestone/milestone.module'
 import { ReportsModule } from './reports/reports.module'
 import { PrinterModule } from './printer/printer.module'
 import { CompaniesModule } from './companies/companies.module'
-import { DollarQuoteModule } from './dollar-quote/dollar-quote.module';
-import { UsersAmountsModule } from './users_amounts/users_amounts.module';
+import { DollarQuoteModule } from './dollar-quote/dollar-quote.module'
+import { UsersAmountsModule } from './users_amounts/users_amounts.module'
 
 @Module({
   imports: [

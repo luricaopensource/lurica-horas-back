@@ -20,7 +20,7 @@ import { IResponse } from 'src/shared/interfaces/response'
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get()
   findAll(): Promise<UserDTO[]> {
@@ -39,7 +39,7 @@ export class UsersController {
 
   @Get('/employees')
   getEmployees(): Promise<UserDTO[]> {
-    return this.usersService.findAllEmployees()
+    return this.usersService.findAll()
   }
 
   @Get(':id')

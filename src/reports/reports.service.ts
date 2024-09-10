@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { PrinterService } from 'src/printer/printer.service'
 import { getSampleReport } from './sample-report.report'
 import { getHoursReport } from './tasks.report'
@@ -59,9 +59,10 @@ export class ReportsService {
     if (employeeId) {
       employee = await this.employeeService.findOne(employeeId, [
         'tasks',
-        'tasks.project',
+        'tasks.project'
       ])
     }
+
     if (customerId) {
       customer = await this.clientService.findOneWithProjects(customerId)
     }
@@ -73,7 +74,7 @@ export class ReportsService {
       subtitle += `Proyecto: ${project.name} \n`
     }
     if (employee) {
-      subtitle += `Empleado: ${employee.firstName} \n`
+      subtitle += `Empleado: ${employee.firstName} ${employee.lastName} \n`
     }
     if (customer) {
       subtitle += `Cliente: ${customer.name} \n`
@@ -85,10 +86,14 @@ export class ReportsService {
       subtitle += `Hito: ${milestone.name} \n`
     }
     if (dateFrom) {
-      subtitle += `Desde: ${DateFormatter.getDDMMYYYY(new Date(dateFrom))} \n`
+      const dateFromPlus1Day = new Date(dateFrom)
+      dateFromPlus1Day.setDate(dateFromPlus1Day.getDate() + 1)
+      subtitle += `Desde: ${DateFormatter.getDDMMYYYY(dateFromPlus1Day)} \n`
     }
     if (dateTo) {
-      subtitle += `Hasta: ${DateFormatter.getDDMMYYYY(new Date(dateTo))} \n`
+      const dateToPlus1Day = new Date(dateTo)
+      dateToPlus1Day.setDate(dateToPlus1Day.getDate() + 1)
+      subtitle += `Hasta: ${DateFormatter.getDDMMYYYY(dateToPlus1Day)} \n`
     }
 
     if (project && employee) {
