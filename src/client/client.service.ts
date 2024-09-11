@@ -42,7 +42,7 @@ export class ClientService {
         name: project.name,
         currency: getCurrency(project.currency),
         amount: project.amount,
-        milestones: project.milestones.map<MilestoneDTO>(milestone => ({
+        milestones: project.milestones.filter(milestone => !milestone.deletedAt).map<MilestoneDTO>(milestone => ({
           id: milestone.id,
           date: milestone.date,
           name: milestone.name,

@@ -192,6 +192,23 @@ export class UsersService {
     return { id: deletedUser.id }
   }
 
+  async removeUserToProject(userId: number, projectId: number): Promise<IResponse> {
+    const userToProject = await this.usersToProjectsRepository.findOne({
+      where: {
+        user: { id: userId },
+        project: { id: projectId }
+      }
+    })
+
+    if (!userToProject) {
+      throw new HttpException(`Usuario no asignado al proyecto`, 404)
+    }
+
+    await this.usersToProjectsRepository.remove(userToProject)
+
+    return { id: userId }
+  }
+
   async getUserFromBearerToken(): Promise<UserDTO> {
     const userId = this.request['user'].sub
 

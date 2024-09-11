@@ -59,4 +59,9 @@ export class UsersController {
   remove(@Param('id') id: string): Promise<IResponse> {
     return this.usersService.remove(+id)
   }
+
+  @Delete(':userId/projects/:projectId')
+  removeUserToProject(@Param('userId') id: string, @Param('projectId') projectId: string): Promise<IResponse> {
+    return this.usersService.removeUserToProject(+id, +projectId)
+  }
 }
