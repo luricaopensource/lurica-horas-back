@@ -77,6 +77,7 @@ export class TasksService {
         id: task.user.id,
         fullName: task.user.firstName + ' ' + task.user.lastName,
         hourlyAmount: task.user.amount,
+        amountType: task.user.amountType === 1 ? 'Mensual' : 'Horario',
         blueQuoteAmount,
         officialQuoteAmount,
         currencyName: getCurrency(task.user.currency)

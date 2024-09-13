@@ -21,6 +21,7 @@ export interface UserTaskDTO {
     id: number
     fullName: string
     hourlyAmount: number
+    amountType: string
     blueQuoteAmount: number
     officialQuoteAmount: number
     currencyName: string
