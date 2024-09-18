@@ -6,6 +6,7 @@ export class CreateTaskDto {
     readonly createdAt: Date
     readonly hours: number
     readonly description: string
+    readonly date: Date
     readonly type: string
     readonly paid: boolean
     readonly status: string

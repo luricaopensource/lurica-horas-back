@@ -14,6 +14,9 @@ export class Task {
     @Column({ type: "text" })
     public description: string
 
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    public date: Date
+
     @Column({ nullable: true, default: null })
     public type: string
 

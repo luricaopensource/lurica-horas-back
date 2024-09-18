@@ -72,6 +72,7 @@ export class TasksService {
       const paid = task.paid
       const status = task.status
       const createdAt = task.createdAt
+      const date = task.date
       const milestone: MilestoneDTO = task.milestone ? { id: task.milestone.id, name: task.milestone.name } : null
       const employee: UserTaskDTO = {
         id: task.user.id,
@@ -83,7 +84,7 @@ export class TasksService {
         currencyName: getCurrency(task.user.currency)
       }
 
-      tasksDto.push({ id, createdAt, project, description, hours, status, paid, milestone, employee })
+      tasksDto.push({ id, createdAt, date, project, description, hours, status, paid, milestone, employee })
     }
 
     return tasksDto
@@ -91,6 +92,8 @@ export class TasksService {
 
   async findAll(): Promise<TaskDTO[]> {
     const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project', 'milestone'] })
+
+    Logger.log(tasks)
 
     return this.iterateTasks(tasks)
   }

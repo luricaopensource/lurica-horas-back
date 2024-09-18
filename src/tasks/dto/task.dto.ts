@@ -12,4 +12,5 @@ export interface TaskDTO {
     paid: boolean
     milestone: MilestoneDTO
     employee: UserTaskDTO
+    date: Date
 }
