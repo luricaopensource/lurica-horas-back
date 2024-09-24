@@ -55,9 +55,9 @@ export const getHoursReport = (subtitle: string, content: IReportContent[][], he
                 table: {
                     headerRows: 1,
                     widths: widths,
-                    heights: 30,
+                    heights: 15,
                     dontBreakRows: true,
-                    body: tableBody
+                    body: tableBody,
                 }
             }
         ]
