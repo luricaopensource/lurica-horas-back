@@ -111,8 +111,8 @@ export class ReportsService {
     }
 
     const generator = new ContentGenerator(strategy)
-    const { content, headers } = await generator.generate(dateFrom, dateTo)
-    const docDefinition = getHoursReport(subtitle, content, headers)
+    const { content, totalContentRow, headers } = await generator.generate(dateFrom, dateTo)
+    const docDefinition = getHoursReport(subtitle, content, headers, totalContentRow)
     return this.printerService.createPdf(docDefinition)
   }
 }

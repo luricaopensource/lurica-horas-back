@@ -9,7 +9,7 @@ export class ProjectStrategy extends ContentStrategy {
         private project: Project
     ) { super() }
 
-    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: string[] }> {
+    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; totalContentRow: string[]; headers: string[] }> {
         const content = []
         let headers = []
 
@@ -33,6 +33,8 @@ export class ProjectStrategy extends ContentStrategy {
             content.push(['', '', '', '', ''])
         }
 
-        return { content, headers }
+        const totalContentRow = ['Total', '', `${content.reduce((acc, curr) => acc + curr[2], 0)}`, '', '']
+
+        return { content, totalContentRow, headers }
     }
 }

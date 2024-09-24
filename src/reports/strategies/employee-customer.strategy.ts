@@ -8,7 +8,7 @@ import { User } from "src/users/entities/user.entity"
 export class EmployeeCustomerStrategy extends ContentStrategy {
     constructor(private tasksService: TasksService, private customer: Client, private employee: User) { super() }
 
-    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: string[] }> {
+    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; totalContentRow: string[]; headers: string[] }> {
         const content = []
         let headers = []
 
@@ -37,6 +37,8 @@ export class EmployeeCustomerStrategy extends ContentStrategy {
             content.push(['', '', '', '', ''])
         }
 
-        return { content, headers }
+        const totalContentRow = ['Total', '', `${content.reduce((acc, curr) => acc + curr[2], 0)}`, '', '']
+
+        return { content, totalContentRow, headers }
     }
 }
