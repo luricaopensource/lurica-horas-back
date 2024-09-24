@@ -14,7 +14,7 @@ export class ProjectEmployeeStrategy extends ContentStrategy {
 
         const dateRange = this.getDateRange(dateFrom, dateTo)
 
-        const tasks = await this.tasksService.findAllByEmployeeAndProject(this.project.id, this.employee.id, dateRange)
+        const tasks = await this.tasksService.findAllByEmployeeAndProject(this.employee.id, this.project.id, dateRange)
         tasks.forEach((task) => {
             const milestoneName = task.milestone ? task.milestone.name : ''
             content.push([

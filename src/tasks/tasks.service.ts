@@ -107,7 +107,11 @@ export class TasksService {
       where['createdAt'] = Between(dateRange.from, dateRange.to)
     }
 
-    return await this.tasksRepository.find({ where, relations: ['milestone'] })
+    Logger.log("Finding tasks by employee and project", where)
+
+    const tasks = await this.tasksRepository.find({ where, relations: ['milestone'] })
+    Logger.log(JSON.stringify(tasks))
+    return tasks
   }
 
   async findAllByProject(projectId: number, dateRange: { from: Date, to: Date } = { from: null, to: null }): Promise<Task[]> {
