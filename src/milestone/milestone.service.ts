@@ -3,7 +3,7 @@ import { CreateMilestoneDto } from './dto/create-milestone.dto'
 import { UpdateMilestoneDto } from './dto/update-milestone.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Milestone } from './entities/milestone.entity'
-import { IsNull, Repository } from 'typeorm'
+import { IsNull, Not, Repository } from 'typeorm'
 import { ProjectsService } from 'src/projects/projects.service'
 import { MilestoneDTO } from './dto/milestone.dto'
 import { IResponse } from 'src/shared/interfaces/response'
@@ -17,20 +17,23 @@ export class MilestoneService {
     private readonly projectService: ProjectsService
   ) { }
 
+  private calculateMilestonePercentage(milestone: CreateMilestoneDto | UpdateMilestoneDto, milestones: Milestone[]): boolean {
+    Logger.log(milestones)
+    const milestonePercentageSum = milestones.reduce((sum, milestone) => sum + milestone.amountPercentage, 0) + milestone.amountPercentage
+
+    Logger.log(milestonePercentageSum)
+
+    return milestonePercentageSum > 100
+  }
 
   async create(createMilestoneDto: CreateMilestoneDto): Promise<IResponse> {
     const project = await this.projectService.findOne(createMilestoneDto.projectId)
 
-    const projectMilestones = await this.milestoneRepository.find({ where: { deletedAt: IsNull() }, relations: ['project', 'project.client'] })
-    let milestonePercentageSum = 0
+    if (!project) throw new HttpException(`Proyecto con ID ${createMilestoneDto.projectId} no encontrado.`, 404)
 
-    projectMilestones.forEach( (milestone) => {
-      milestonePercentageSum += milestone.amountPercentage
-    })
+    const projectMilestones = await this.milestoneRepository.find({ where: { project, deletedAt: IsNull() } })
 
-    milestonePercentageSum += createMilestoneDto.amountPercentage
-
-    if (milestonePercentageSum > 100) throw new HttpException(`La suma del porcentaje de hitos para el proyecto ${project.name} supera el 100%`, 400)
+    if (this.calculateMilestonePercentage(createMilestoneDto, projectMilestones)) throw new HttpException(`La suma del porcentaje de hitos para el proyecto ${project.name} supera el 100%`, 400)
 
     const milestoneData = this.milestoneRepository.create(createMilestoneDto)
     milestoneData.project = project
@@ -38,7 +41,6 @@ export class MilestoneService {
 
     return { id: savedMilestone.id }
   }
-
 
   async findAll(): Promise<MilestoneDTO[]> {
     const milestones = await this.milestoneRepository.find({ where: { deletedAt: IsNull() }, relations: ['project', 'project.client'] })
@@ -55,7 +57,7 @@ export class MilestoneService {
   }
 
   async findAllByProject(projectId: number): Promise<MilestoneDTO[]> {
-    const milestones = await this.milestoneRepository.find({ where: { project: {id: projectId }, deletedAt: IsNull() }, relations: ['project', 'project.client'] })
+    const milestones = await this.milestoneRepository.find({ where: { project: { id: projectId }, deletedAt: IsNull() }, relations: ['project', 'project.client'] })
 
     return milestones.map<MilestoneDTO>((milestone: Milestone) => {
       const id = milestone.id
@@ -83,6 +85,14 @@ export class MilestoneService {
   async update(id: number, updateMilestoneDto: UpdateMilestoneDto): Promise<Milestone> {
     const milestone = await this.findOne(id)
     if (!milestone) { throw new HttpException(`Milestone with id ${id} not found`, 404) };
+
+    const project = await this.projectService.findOne(updateMilestoneDto.projectId)
+
+    if (!project) throw new HttpException(`Proyecto con ID ${updateMilestoneDto.projectId} no encontrado.`, 404)
+
+    const projectMilestones = await this.milestoneRepository.find({ where: { id: Not(updateMilestoneDto.id), project, deletedAt: IsNull() } })
+
+    if (this.calculateMilestonePercentage(updateMilestoneDto, projectMilestones)) throw new HttpException(`La suma del porcentaje de hitos para el proyecto ${project.name} supera el 100%`, 400)
 
     const milestoneData = this.milestoneRepository.merge(milestone, updateMilestoneDto)
     return await this.milestoneRepository.save(milestoneData)
