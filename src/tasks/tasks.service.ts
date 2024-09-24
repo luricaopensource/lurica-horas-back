@@ -91,9 +91,11 @@ export class TasksService {
   }
 
   async findAll(): Promise<TaskDTO[]> {
-    const tasks = await this.tasksRepository.find({ where: { deletedAt: IsNull() }, relations: ['user', 'project', 'milestone'] })
-
-    Logger.log(tasks)
+    const tasks = await this.tasksRepository.find({
+      where: { deletedAt: IsNull() },
+      order: { date: 'ASC' },
+      relations: ['user', 'project', 'milestone']
+    })
 
     return this.iterateTasks(tasks)
   }
@@ -123,7 +125,11 @@ export class TasksService {
   }
 
   async findAllByEmployeeDTO(employeeId: number): Promise<TaskDTO[]> {
-    const tasks = await this.tasksRepository.find({ where: { user: { id: employeeId } }, relations: ['user', 'project', 'milestone'] })
+    const tasks = await this.tasksRepository.find({
+      where: { user: { id: employeeId } },
+      order: { date: 'ASC' },
+      relations: ['user', 'project', 'milestone']
+    })
 
     return this.iterateTasks(tasks)
   }
