@@ -7,7 +7,7 @@ import { Logger } from "@nestjs/common"
 export class DefaultGenerationStrategy extends ContentStrategy {
     constructor(private tasksService: TasksService) { super() }
 
-    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
+    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: string[] }> {
         const content = []
         let headers = []
 

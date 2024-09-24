@@ -48,5 +48,5 @@ export abstract class ContentStrategy {
         return dateRange
     }
 
-    abstract generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][], headers: IReportHeaders[] }>
+    abstract generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][], headers: string[] }>
 }

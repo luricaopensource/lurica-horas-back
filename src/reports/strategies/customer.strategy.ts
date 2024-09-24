@@ -8,7 +8,7 @@ import { ContentStrategy } from "./content-strategy.interface"
 export class CustomerStrategy extends ContentStrategy {
     constructor(private tasksService: TasksService, private customer: Client) { super() }
 
-    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
+    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: string[] }> {
         const content = []
         let headers = []
 

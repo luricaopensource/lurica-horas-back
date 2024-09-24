@@ -8,7 +8,7 @@ import { User } from "src/users/entities/user.entity"
 export class EmployeeCustomerStrategy extends ContentStrategy {
     constructor(private tasksService: TasksService, private customer: Client, private employee: User) { super() }
 
-    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
+    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: string[] }> {
         const content = []
         let headers = []
 

@@ -9,7 +9,7 @@ export class ProjectStrategy extends ContentStrategy {
         private project: Project
     ) { super() }
 
-    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: IReportHeaders[] }> {
+    async generateContentAndHeaders(dateFrom: string, dateTo: string): Promise<{ content: IReportContent[][]; headers: string[] }> {
         const content = []
         let headers = []
 

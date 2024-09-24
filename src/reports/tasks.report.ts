@@ -1,5 +1,6 @@
 import { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
 import { headerSection } from "./sections/header.section"
+import { Logger } from "@nestjs/common"
 
 export interface IReportHeaders {
     date: string
@@ -35,9 +36,11 @@ const styles: StyleDictionary = {
 }
 
 
-export const getHoursReport = (subtitle: string, content: IReportContent[][], headers: IReportHeaders[]): TDocumentDefinitions => {
+export const getHoursReport = (subtitle: string, content: IReportContent[][], headers: string[]): TDocumentDefinitions => {
     let widths = []
-    headers.forEach(() => { widths.push('*') })
+    headers.forEach((header: string) => {
+        header == "Tarea" ? widths.push('*') : widths.push('auto')
+    })
 
     const tableBody = [headers, ...content]
 
